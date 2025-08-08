@@ -26,3 +26,11 @@ class Choice(models.Model):
         super().save(*args, **kwargs)
     def __str__(self):
          return f"{self.label}. {self.choice_text}"
+class ExamResult(models.Model):
+    username = models.CharField(max_length=100)
+    score = models.IntegerField()
+    submit_time = models.DateTimeField(auto_now_add=True)
+    passed = models.BooleanField(default=False)  # Thêm trường này
+
+    def __str__(self):
+        return f"{self.username}: {self.score} ({self.submit_time}) ({'O' if self.passed else 'X'})"

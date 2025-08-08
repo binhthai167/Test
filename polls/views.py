@@ -5,6 +5,7 @@ from django.urls import reverse
 from django.views import generic
 from django.utils import timezone
 from django.shortcuts import render, redirect
+from .models import ExamResult
 
 class IndexView(generic.ListView):
     model = Question
@@ -36,9 +37,8 @@ def submit_exam(request):
     if request.method == 'POST':
         questions = Question.objects.all()
         score = 0
-        total = questions.count()
         results = []
-
+        username = request.session.get('username', 'Ẩn danh')
         for question in questions:
             selected_choice_id = request.POST.get(f'question_{question.id}')
             try:
@@ -57,7 +57,8 @@ def submit_exam(request):
                     'selected': None,
                     'is_correct': False
                 })
-
+        passed = score >= 2
+        ExamResult.objects.create(username=username, score=score, passed=passed)
         # Lưu kết quả vào session để chuyển sang trang result
         request.session['exam_results'] = [{
             'question': r['question'].question_text,
@@ -65,21 +66,20 @@ def submit_exam(request):
             'is_correct': r['is_correct']
         } for r in results]
         request.session['score'] = score
-        request.session['total'] = total
-
+        request.session['username'] = username
+        request.session['passed'] = passed
         return redirect('polls:result')
 
     return redirect('polls:index')
 
 def result(request):
-
     results = request.session.get('exam_results', [])
     score = request.session.get('score', 0)
-    total = request.session.get('total', 0)
     username = request.session.get('username', 'Người dùng')
+    passed = request.session.get('passed', False)
     return render(request, 'polls/result.html', {
         'score': score,
-        'total': total,
         'results': results,
         'username': username,
+        'passed': passed
     })

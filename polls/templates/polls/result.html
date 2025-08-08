@@ -12,7 +12,8 @@
     <div class="score-box">
         <span class="username">{{ username }}</span>,
         <span>Điểm của bạn:</span>
-        <span class="score">{{ score }} / {{ total }}</span>
+        <span class="score">{{ score }}</span>
+        <span>Kết quả: <strong>{% if passed %}passed{% else %}failed{% endif %}</strong></span>
     </div>
     <hr>
     <div class="result-list">
@@ -31,7 +32,7 @@
             <hr>
         {% endfor %}
     </div>
-    <a href="{% url 'polls:index' %}" class="again-btn">Làm lại bài kiểm tra</a>
+    <a href="{% url 'polls:home' %}" class="again-btn">về trang chủ</a>
 </div>
 </body>
 </html>
