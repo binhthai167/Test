@@ -7,6 +7,10 @@ from django.utils import timezone
 from django.shortcuts import render, redirect
 from .models import ExamResult
 
+
+def loaderio_verification(request):
+    return HttpResponse("loaderio-d62c75f95bb592331c05c414e7ba073a", content_type="text/plain")
+
 class IndexView(generic.ListView):
     model = Question
     template_name = 'polls/index.html'

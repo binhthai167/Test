@@ -8,4 +8,5 @@ urlpatterns = [
     path('index/', views.IndexView.as_view(), name='index'),
     path('submit/', views.submit_exam, name='submit_exam'),
     path('result/', views.result, name='result'),
+    path('loaderio-d62c75f95bb592331c05c414e7ba073a/', views.loaderio_verification),
 ] 
