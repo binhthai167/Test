@@ -1,0 +1,33 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>All Polls</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'polls/style.css' %}">
+</head>
+<body>
+
+<div class="poll-container">
+    <h1>Kiểm tra đầu vào</h1>
+
+    <form method="post" action="{% url 'polls:submit_exam' %}">
+  {% csrf_token %}
+  {% for question in questions %}
+    <div>
+      <p><strong>{{ forloop.counter }}. {{ question.question_text }}</strong></p>
+      {% for choice in question.choice_set.all %}
+        <label>
+          <input type="radio" name="question_{{ question.id }}" value="{{ choice.id }}">
+          {{ choice.label }}. {{ choice.choice_text }}
+        </label><br>
+      {% endfor %}
+    </div>
+    <hr>
+  {% endfor %}
+  <button type="submit">Nộp bài</button>
+</form>
+</div>
+
+</body>
+</html>

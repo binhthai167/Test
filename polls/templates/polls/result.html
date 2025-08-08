@@ -1,0 +1,37 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Kết quả bài kiểm tra</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'polls/style.css' %}">
+</head>
+<body>
+<div class="result-container">
+    <h2 class="result-title">🎉 Kết quả bài kiểm tra</h2>
+    <div class="score-box">
+        <span class="username">{{ username }}</span>,
+        <span>Điểm của bạn:</span>
+        <span class="score">{{ score }} / {{ total }}</span>
+    </div>
+    <hr>
+    <div class="result-list">
+        {% for r in results %}
+            <div class="result-item">
+                <div class="result-question"><strong>{{ forloop.counter }}. {{ r.question }}</strong></div>
+                <div class="result-answer">
+                    Bạn chọn: <span class="selected-answer">{{ r.selected }}</span>
+                    {% if r.is_correct %}
+                        <span class="correct">✅ Đúng</span>
+                    {% else %}
+                        <span class="incorrect">❌ Sai</span>
+                    {% endif %}
+                </div>
+            </div>
+            <hr>
+        {% endfor %}
+    </div>
+    <a href="{% url 'polls:index' %}" class="again-btn">Làm lại bài kiểm tra</a>
+</div>
+</body>
+</html>

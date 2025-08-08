@@ -1,0 +1,22 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Trang chủ</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'polls/style.css' %}">
+</head>
+<body>
+<div class="poll-container">
+    <h1 class="poll-title">📝 Chào mừng bạn đến với bài kiểm tra!</h1>
+    <form method="post" action="{% url 'polls:save_name' %}">
+        {% csrf_token %}
+        <div class="question-block">
+            <label for="username" class="question-text">Nhập tên của bạn:</label>
+            <input type="text" id="username" name="username" class="input-text" required>
+        </div>
+        <button type="submit" class="submit-btn">Bắt đầu</button>
+    </form>
+</div>
+</body>
+</html>
