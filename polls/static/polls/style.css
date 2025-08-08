@@ -1,8 +1,19 @@
 li a {
     color: green;
 }
+.input-text {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #bfc9d9;
+    border-radius: 6px;
+    font-size: 1em;
+    margin-top: 8px;
+    margin-bottom: 18px;
+    box-sizing: border-box;
+}
 body {
-    background: #f6f8fa;
+    background: white;
     font-family: 'Segoe UI', Arial, sans-serif;
     margin: 0;
     padding: 0;
@@ -11,7 +22,7 @@ body {
 .poll-container {
     max-width: 700px;
     margin: 40px auto;
-    background: #fff;
+    background: white;
     border-radius: 12px;
     box-shadow: 0 4px 24px rgba(0,0,0,0.08);
     padding: 32px 40px;
@@ -151,4 +162,36 @@ body {
 
 .again-btn:hover {
     background: #174bbd;
+}
+/* Responsive cho mobile */
+@media (max-width: 600px) {
+    .poll-container,
+    .result-container {
+        max-width: 98vw;
+        padding: 16px 6px;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    }
+    .poll-title,
+    .result-title {
+        font-size: 1.2em;
+        margin-bottom: 18px;
+    }
+    .submit-btn,
+    .again-btn {
+        width: 100%;
+        padding: 12px 0;
+        font-size: 1em;
+    }
+    .input-text,
+    .poll-admin-input {
+        font-size: 1em;
+        padding: 8px;
+    }
+    .question-block {
+        margin-bottom: 16px;
+    }
+    .score-box {
+        font-size: 1em;
+    }
 }
