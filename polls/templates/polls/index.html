@@ -1,0 +1,223 @@
+{% load static %}
+{% load custom_filters %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Kiểm tra đầu vào</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'polls/index.css' %}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+<div class="poll-container">
+    <h1 class="poll-title">📝 Kiểm tra đầu vào</h1>
+    <div class="user-info-container">
+        <form method="post" action="{% url 'polls:submit_exam' exam_code.code %}">
+            {% csrf_token %}
+            <div class="question-block">
+                <label for="username" class="question-text">👤 Nhập tên của bạn:</label>
+                <input type="text" id="username" name="username" class="input-text" placeholder="Ví dụ: Nguyễn Văn A" value="{{ request.session.username|default_if_none:'' }}" required>
+
+                <label for="email" class="question-text">📧 Nhập email của bạn:</label>
+                <input type="email" id="email" name="email" class="input-text" placeholder="email@domain.com" value="{{ request.session.email|default_if_none:'' }}" required>
+            </div>
+            <br>
+            
+            {% for question in questions %}
+            <div class="question-block">
+                <p class="question-text">
+                    <strong>{{ forloop.counter }}. {{ question.question_text }}</strong>
+                </p>
+                {% if question.question_type == 'TEXT' %}
+                    <textarea name="question_{{ question.id }}" rows="4" class="input-textarea" placeholder="Write your answer here...">{{ text_answers|get_item:question.id|default_if_none:"" }}</textarea>
+                {% else %}
+                    <div class="choice-list">
+                        {% for choice in question.choice_set.all %}
+                            <label class="choice-label">
+                                <input type="radio"
+                                       name="question_{{ question.id }}"
+                                       value="{{ choice.id }}"
+                                       {% if selected_choices|get_item:question.id == choice.id|stringformat:"s" %}checked{% endif %}>
+                                <span class="choice-text">{{ choice.label }}. {{ choice.choice_text }}</span>
+                            </label>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+            {% endfor %}
+            <input type="hidden" name="exam_code" value="{{ exam_code.code }}">
+            <button type="submit" class="submit-btn">Nộp bài</button>
+        </form>
+    </div>
+</div>
+
+<script>
+    // Hàm lấy CSRF token từ cookie
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.startsWith(name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        console.log("CSRF Token:", cookieValue); // Debug CSRF token
+        return cookieValue;
+    }
+    const csrftoken = getCookie('csrftoken');
+
+    // Lưu câu trả lời văn bản
+    document.querySelectorAll('textarea.input-textarea').forEach(function(textarea) {
+        textarea.addEventListener('input', function() {
+            const questionId = this.name.replace('question_', '');
+            const answerText = this.value;
+            saveTextAnswer(questionId, answerText);
+        });
+        // Khởi tạo: Gửi lại câu trả lời đã lưu từ session (nếu có) khi tải trang
+        // const questionId = textarea.name.replace('question_', '');
+        // if (textarea.value) {
+        //     saveTextAnswer(questionId, textarea.value);
+        // }
+    });
+
+    // Lưu câu trả lời trắc nghiệm
+    document.querySelectorAll('input[type=radio]').forEach(function(radio) {
+        radio.addEventListener('change', function() {
+            const questionId = this.name.replace('question_', '');
+            const choiceId = this.value;
+            saveChoice(questionId, choiceId);
+        });
+    });
+
+    // Hàm lưu câu trả lời văn bản qua AJAX
+    function saveTextAnswer(questionId, answerText) {
+        console.log("Saving text answer for question:", questionId, "Answer:", answerText);
+        fetch("{% url 'polls:save_text_answer' %}", {
+            method: "POST",
+            headers: {
+                "X-CSRFToken": csrftoken,
+                "Content-Type": "application/x-www-form-urlencoded"
+            },
+            body: "question_id=" + encodeURIComponent(questionId) +
+                  "&answer_text=" + encodeURIComponent(answerText)
+        })
+        .then(response => {
+            console.log("Save text response status:", response.status);
+            return response.json();
+        })
+        .then(data => {
+            if (data.status === 'ok') {
+                console.log("Text answer saved successfully:", data);
+                // Lưu vào localStorage như dự phòng
+            } else {
+                console.error("Error saving text answer:", data.message);
+                alert("Lỗi khi lưu câu trả lời văn bản: " + data.message);
+                localStorage.setItem('text_answer_' + questionId, answerText);
+            }
+        })
+        .catch(error => {
+            console.error("Error in saveTextAnswer:", error);
+            localStorage.setItem('text_answer_' + questionId, answerText);
+        });
+    }
+
+    // Hàm lưu câu trả lời trắc nghiệm qua AJAX
+    function saveChoice(questionId, choiceId) {
+        console.log("Saving choice for question:", questionId, "Choice:", choiceId);
+        fetch("{% url 'polls:save_choice' %}", {
+            method: "POST",
+            headers: {
+                "X-CSRFToken": csrftoken,
+                "Content-Type": "application/x-www-form-urlencoded"
+            },
+            body: "question_id=" + encodeURIComponent(questionId) +
+                  "&choice_id=" + encodeURIComponent(choiceId)
+        })
+        .then(response => {
+            console.log("Save choice response status:", response.status);
+            return response.json();
+        })
+        .then(data => {
+            if (data.status === 'ok') {
+                console.log("Choice saved successfully:", data);
+            } else {
+                console.error("Error saving choice:", data.message);
+                alert("Lỗi khi lưu câu trả lời trắc nghiệm: " + data.message);
+            }
+        })
+        .catch(error => {
+            console.error("Error in saveChoice:", error);
+            alert("Lỗi kết nối khi lưu câu trả lời trắc nghiệm.");
+        });
+    }
+
+    // Xử lý redirect khi đã hoàn thành bài thi
+    const examCompletedStr = "{{ exam_completed|default_if_none:'false' }}";
+    const examCompleted = examCompletedStr.toLowerCase() === "true";
+
+    if (examCompleted) {
+        window.location.replace("{% url 'polls:result' exam_code.code %}");
+    }
+
+    // Xử lý khi trang được load từ bộ nhớ cache của trình duyệt
+    window.addEventListener('pageshow', function(event) {
+        if (event.persisted) {
+            window.location.replace("{% url 'polls:result' exam_code.code %}");
+        }
+    });
+
+    // Lưu câu trả lời trước khi trang được tải lại hoặc đóng
+    window.addEventListener('beforeunload', function(event) {
+        document.querySelectorAll('textarea.input-textarea').forEach(function(textarea) {
+            const questionId = textarea.name.replace('question_', '');
+            const answerText = textarea.value;
+            if (answerText) {
+                console.log("Before unload: Saving text answer for question:", questionId);
+                saveTextAnswer(questionId, answerText);
+            }
+        });
+        document.querySelectorAll('input[type=radio]:checked').forEach(function(radio) {
+            const questionId = radio.name.replace('question_', '');
+            const choiceId = radio.value;
+            console.log("Before unload: Saving choice for question:", questionId);
+            saveChoice(questionId, choiceId);
+        });
+    });
+
+    // Tự động lưu câu trả lời mỗi 5 giây
+    setInterval(function() {
+        document.querySelectorAll('textarea.input-textarea').forEach(function(textarea) {
+            const questionId = textarea.name.replace('question_', '');
+            const answerText = textarea.value;
+            if (answerText) {
+                console.log("Periodic save: Saving text answer for question:", questionId);
+                saveTextAnswer(questionId, answerText);
+            }
+        });
+        document.querySelectorAll('input[type=radio]:checked').forEach(function(radio) {
+            const questionId = radio.name.replace('question_', '');
+            const choiceId = radio.value;
+            console.log("Periodic save: Saving choice for question:", questionId);
+            saveChoice(questionId, choiceId);
+        });
+    }, 5000); // Lưu mỗi 5 giây
+
+    // Khôi phục câu trả lời từ localStorage khi tải trang
+    document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('textarea.input-textarea').forEach(function(textarea) {
+            const questionId = textarea.name.replace('question_', '');
+            const savedAnswer = localStorage.getItem('text_answer_' + questionId);
+            if (savedAnswer && !textarea.value) {
+                console.log("Restoring text answer from localStorage for question:", questionId);
+                textarea.value = savedAnswer;
+                saveTextAnswer(questionId, savedAnswer); // Gửi lại lên server
+            }
+        });
+    });
+</script>
+</body>
+</html>

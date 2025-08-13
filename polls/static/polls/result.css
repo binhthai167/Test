@@ -1,0 +1,168 @@
+/* ====== RESET ====== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    width: 100%;
+    overflow-x: hidden;
+}
+
+body {
+    font-family: 'Segoe UI', sans-serif;
+    background: linear-gradient(135deg, #74ABE2, #5563DE);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 15px;
+}
+
+/* ====== KHUNG CHÍNH ====== */
+.result-container {
+    background: #fff;
+    padding: 2rem;
+    border-radius: 15px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+    width: 100%;
+    max-width: 700px;
+    animation: fadeIn 0.8s ease;
+    word-wrap: break-word;
+}
+
+/* ====== TIÊU ĐỀ ====== */
+.result-title {
+    text-align: center;
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 1.5rem;
+}
+
+/* ====== BOX ĐIỂM ====== */
+.score-box {
+    text-align: center;
+    font-size: 1.2rem;
+    background: #f7f9fc;
+    padding: 1rem;
+    border-radius: 10px;
+    margin-bottom: 1.5rem;
+}
+
+.score {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #5563DE;
+    margin: 0 10px;
+}
+
+/* ====== DANH SÁCH KẾT QUẢ ====== */
+.result-list {
+    margin-top: 1rem;
+}
+
+.result-item {
+    padding: 0.8rem 0;
+}
+
+.result-question {
+    font-size: 1rem;
+    color: #333;
+    margin-bottom: 5px;
+}
+
+.result-answer {
+    font-size: 0.95rem;
+    color: #555;
+}
+
+.selected-answer {
+    font-weight: 500;
+    color: #007bff;
+}
+
+.correct {
+    color: green;
+    font-weight: bold;
+    margin-left: 10px;
+}
+
+.incorrect {
+    color: red;
+    font-weight: bold;
+    margin-left: 10px;
+}
+
+/* ====== NÚT QUAY LẠI ====== */
+.again-btn {
+    display: block;
+    text-align: center;
+    margin-top: 2rem;
+    background: #5563DE;
+    color: #fff;
+    padding: 12px 15px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: background 0.3s ease, transform 0.1s ease;
+}
+
+.again-btn:hover {
+    background: #4050c7;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(64,80,199,0.3);
+}
+
+/* ====== HIỆU ỨNG ====== */
+@keyframes fadeIn {
+    from {opacity: 0; transform: translateY(20px);}
+    to {opacity: 1; transform: translateY(0);}
+}
+
+/* ====== RESPONSIVE ====== */
+@media (max-width: 768px) {
+    .result-container {
+        padding: 1.5rem;
+        max-width: 90%;
+    }
+
+    .score {
+        font-size: 1.8rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .result-container {
+        padding: 1rem;
+        border-radius: 10px;
+        max-width: 95%;
+    }
+
+    .result-title {
+        font-size: 1.4rem;
+    }
+
+    .score-box {
+        font-size: 0.95rem;
+        padding: 0.8rem;
+    }
+
+    .score {
+        font-size: 1.4rem;
+    }
+
+    .result-question {
+        font-size: 0.9rem;
+    }
+
+    .result-answer {
+        font-size: 0.85rem;
+    }
+
+    .again-btn {
+        font-size: 0.9rem;
+        padding: 8px;
+    }
+}

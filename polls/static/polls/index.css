@@ -1,0 +1,135 @@
+/* Khung chính */
+.poll-container {
+    max-width: 800px;
+    margin: auto;
+    padding: 20px;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    font-family: 'Segoe UI', sans-serif;
+    box-sizing: border-box;
+}
+
+/* Tiêu đề */
+.poll-title {
+    text-align: center;
+    font-size: clamp(1.4rem, 3vw, 1.8rem);
+    font-weight: bold;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+/* Khối thông tin người dùng */
+.user-info-container {
+    background: #fff;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.08);
+    margin-bottom: 20px;
+}
+
+/* Khối câu hỏi */
+.question-block {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.question-text {
+    font-size: clamp(1rem, 2.5vw, 1.1rem);
+    font-weight: 600;
+    color: #333;
+}
+
+/* Input & Textarea */
+.input-text, .input-textarea {
+    width: 100%;
+    padding: 12px 14px;
+    font-size: 1rem;
+    font-family: inherit;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #fafafa;
+    box-sizing: border-box;
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.input-text:focus, .input-textarea:focus {
+    outline: none;
+    border-color: #4a90e2;
+    box-shadow: 0 0 6px rgba(74, 144, 226, 0.4);
+    background-color: #fff;
+}
+
+.input-textarea {
+    min-height: 100px;
+    resize: vertical;
+}
+
+/* Danh sách lựa chọn */
+.choice-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.choice-label {
+    background: #f7f9fc;
+    padding: 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: background 0.2s ease, transform 0.1s ease;
+}
+
+.choice-label:hover {
+    background: #eaf2ff;
+    transform: translateY(-1px);
+}
+
+.choice-label input[type="radio"] {
+    accent-color: #007bff;
+}
+
+.choice-text {
+    font-size: clamp(0.95rem, 2vw, 1rem);
+    color: #333;
+}
+
+/* Nút submit */
+.submit-btn {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: clamp(1rem, 2.5vw, 1.125rem);
+    cursor: pointer;
+    transition: background 0.2s ease, transform 0.1s ease;
+}
+
+.submit-btn:hover {
+    background-color: #0056b3;
+    transform: translateY(-2px);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .poll-container {
+        padding: 15px;
+    }
+}
+
+@media (max-width: 480px) {
+    .poll-title {
+        margin-bottom: 15px;
+    }
+    .question-block {
+        gap: 8px;
+    }
+}

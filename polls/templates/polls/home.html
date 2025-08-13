@@ -1,0 +1,22 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Trang chủ</title>
+    <link rel="stylesheet" href="{% static 'polls/home.css' %}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+<div class="poll-container">
+    <h1 class="poll-title">📝 Bài kiểm tra đầu vào</h1>
+    {% if random_exam_code %}
+        <a href="{% url 'polls:start_exam' random_exam_code %}" class="start-link">
+            <button type="button" class="submit-btn">🚀 Bắt đầu</button>
+        </a>
+    {% else %}
+        <p class="no-exam">⚠️ Chưa có bài kiểm tra nào để bắt đầu.</p>
+    {% endif %}
+</div>
+</body>
+</html>

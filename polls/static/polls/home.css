@@ -1,0 +1,92 @@
+/* Toàn trang */
+body {
+    font-family: 'Segoe UI', sans-serif;
+    background: linear-gradient(135deg, #74ABE2, #5563DE);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    padding: 1rem;
+}
+
+/* Khung form */
+.poll-container {
+    background: rgba(255, 255, 255, 0.95);
+    padding: 2.5rem;
+    border-radius: 20px;
+    box-shadow: 0 12px 30px rgba(0,0,0,0.15);
+    width: 100%;
+    max-width: 420px;
+    animation: fadeIn 0.8s ease;
+    text-align: center;
+}
+
+/* Tiêu đề */
+.poll-title {
+    font-size: clamp(1.4rem, 2.5vw, 1.8rem); /* co giãn theo màn hình */
+    font-weight: 700;
+    margin-bottom: 2rem;
+    color: #2f2f2f;
+}
+
+/* Nút bấm */
+.submit-btn {
+    background: linear-gradient(135deg, #5563DE, #3743c1);
+    color: #fff;
+    padding: 0.85rem 1.2rem;
+    border: none;
+    border-radius: 12px;
+    font-size: clamp(0.95rem, 2vw, 1.05rem);
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    box-shadow: 0 5px 15px rgba(64,80,199,0.3);
+    width: 100%; /* full width trên mobile */
+    max-width: 250px;
+}
+
+.submit-btn:hover {
+    background: linear-gradient(135deg, #4050c7, #2d39a0);
+    transform: translateY(-3px) scale(1.03);
+    box-shadow: 0 8px 20px rgba(64,80,199,0.4);
+}
+
+/* Link bao nút */
+.start-link {
+    text-decoration: none;
+    display: inline-block;
+}
+
+/* Khi chưa có bài */
+.no-exam {
+    font-size: clamp(0.9rem, 2vw, 1rem);
+    color: #555;
+    background: #f7f7f7;
+    padding: 1rem;
+    border-radius: 10px;
+    border: 1px dashed #ccc;
+}
+
+/* Hiệu ứng */
+@keyframes fadeIn {
+    from {opacity: 0; transform: translateY(20px);}
+    to {opacity: 1; transform: translateY(0);}
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .poll-container {
+        padding: 2rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .poll-container {
+        padding: 1.5rem;
+        border-radius: 15px;
+    }
+    .submit-btn {
+        padding: 0.75rem 1rem;
+    }
+}
