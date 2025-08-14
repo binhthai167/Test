@@ -4,8 +4,6 @@ from .models import Question, Choice, ExamResult, ExamCode
 from django.utils.html import format_html
 from import_export import resources, fields
 from .models import ExamResult
-import json
-import datetime
 # Register your models here.
 
 class ChoiceInline(admin.TabularInline):    
