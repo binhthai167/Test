@@ -6,7 +6,7 @@ spell = SpellChecker(language=None)
 spell.word_frequency.load_text_file("vietnamese_dict.txt")
 
 # 2. Khởi tạo mô hình sentence embedding
-model = SentenceTransformer('paraphrase-multilingual-MiniLM-L12-v2')  # hỗ trợ tiếng Việt
+model = SentenceTransformer("all-MiniLM-L6-v2")  # model nhỏ, nhanh, ít RAM
 
 def score_open_ended_answer(answer_text, question):
     if not answer_text or not question:
