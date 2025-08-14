@@ -1,10 +1,7 @@
-import re, os
+import re
 from spellchecker import SpellChecker
 from sentence_transformers import SentenceTransformer, util
 
-
-# nltk.download('punkt')
-# nltk.download('punkt_tab')
 spell = SpellChecker(language=None)
 spell.word_frequency.load_text_file("vietnamese_dict.txt")
 
@@ -38,16 +35,4 @@ def score_open_ended_answer(answer_text, question):
     final_score = semantic_score - spell_penalty
     final_score = max(0, min(final_score, max_score))  # Đảm bảo điểm không âm và không vượt quá max_score
     return final_score
-    # sentences = sent_tokenize(answer_text)
-    # keywords = [kw.strip().lower() for kw in (question.keywords or "").split(",") if kw.strip()]
-    # matched_keywords = sum(1 for kw in keywords if kw in clean_answer)
-    # sentence_count = len(sentences)
-    # valid_word_count = matched_keywords
-    # max_needed_keywords = 2
-
-    # keyword_score = min(matched_keywords / max_needed_keywords, 1) * 0.9 * max_score
-    # length_score = min(valid_word_count / 5, 1) * 0.1 * max_score
-
-    # nltk_score = keyword_score + length_score 
-
-    # return nltk_score
+    
