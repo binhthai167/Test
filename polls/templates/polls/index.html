@@ -32,7 +32,7 @@
             {% for question in questions %}
             <div class="question-block">
                 <p class="question-text">
-                    <strong>{{ forloop.counter }}. {{ question.question_text }}</strong>
+                    <strong>{{ forloop.counter }}) {{ question.question_text }}</strong>
                 </p>
                 {% if question.question_type == 'TEXT' %}
                     <textarea name="question_{{ question.id }}" rows="4" class="input-textarea" placeholder="Write your answer here...">{{ text_answers|get_item:question.id|default_if_none:"" }}</textarea>
