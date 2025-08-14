@@ -17,9 +17,13 @@
             <div class="question-block">
                 <label for="username" class="question-text">👤 Nhập tên của bạn:</label>
                 <input type="text" id="username" name="username" class="input-text" placeholder="Ví dụ: Nguyễn Văn A" value="{{ request.session.username|default_if_none:'' }}" required>
-
+                <label for = "phone" class="question-text">📞 Nhập số điện thoại của bạn:</label>
+                <input type="text" id="phone" name="phone" class="input-text" placeholder="0123456789" value="{{ request.session.phone|default_if_none:'' }}" required>
+                
                 <label for="email" class="question-text">📧 Nhập email của bạn:</label>
                 <input type="email" id="email" name="email" class="input-text" placeholder="email@domain.com" value="{{ request.session.email|default_if_none:'' }}" required>
+                <label for="supplier_company" class="question-text">🏢 Nhập tên công ty cung ứng: </label>
+                <input type="text" id="supplier_company" name="supplier_company" class="input-text" placeholder="Công ty TNHH ABC" value="{{ request.session.supplier_company|default_if_none:'' }}" required>
             </div>
             <br>
             

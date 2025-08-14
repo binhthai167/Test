@@ -9,7 +9,7 @@ import random
 from .models import ExamCode
 from django.db import IntegrityError
 from django.views.decorators.csrf import csrf_exempt
-
+from datetime import datetime
 from .scoreforquestion import score_open_ended_answer
 
 
@@ -17,6 +17,12 @@ from .scoreforquestion import score_open_ended_answer
 
 
 def home(request):
+    exam_date = request.session.get('exam_date')
+    today_str = datetime.now().strftime('%Y-%m-%d')
+    # Nếu đã hoàn thành nhưng ngày làm khác hôm nay => reset
+    if request.session.get('exam_completed') and exam_date != today_str:
+        request.session.flush()  # Xóa toàn bộ session
+        request.session.clear_expired()
     if request.session.get('exam_completed'):
         random_exam_code = None
     else:
@@ -131,6 +137,8 @@ def submit_exam(request, exam_code):
     if request.method == 'POST':
         username = request.POST.get('username', '').strip()
         email = request.POST.get('email', '').strip()
+        phone = request.POST.get('phone', '').strip()
+        supplier_company = request.POST.get('supplier_company', '').strip()
         exam_code = request.POST.get('exam_code')
         exam_code_obj = get_object_or_404(ExamCode, code=exam_code)
         if not exam_code:
@@ -146,10 +154,13 @@ def submit_exam(request, exam_code):
 
         request.session['username'] = username
         request.session['email'] = email
+        request.session['phone'] = phone
+        request.session['supplier_company'] = supplier_company
         if email and ExamResult.objects.filter(email=email).exists():
             return redirect('polls:result', exam_code=exam_code)        
         questions = exam_code_obj.questions.all().order_by('question_text')
         score = 0
+        score = round(score, 1)  # Làm tròn điểm số
         results = []
         for question in questions:
             field_name = f'question_{question.id}'
@@ -199,6 +210,8 @@ def submit_exam(request, exam_code):
             ExamResult.objects.create(
                 username=username,
                 email=email,
+                phone=phone,
+                supplier_company=supplier_company,
                 score=score,
                 passed=passed,
                 results=results
@@ -210,6 +223,7 @@ def submit_exam(request, exam_code):
         request.session['score'] = score
         request.session['passed'] = passed
         request.session['exam_completed'] = True
+        request.session['exam_date'] = datetime.now().strftime('%Y-%m-%d')
         
         # Xóa các session không còn cần thiết
         if 'selected_choices' in request.session:
@@ -233,13 +247,18 @@ def result(request, exam_code):
         results = exam_result.results
         score = exam_result.score
         username = exam_result.username
+        phone = exam_result.phone
+        supplier_company = exam_result.supplier_company
         passed = exam_result.passed
         request.session['exam_results'] = results
         request.session['score'] = score
         request.session['username'] = username
         request.session['email'] = email
+        request.session['phone'] = phone
+        request.session['supplier_company'] = supplier_company
         request.session['passed'] = passed
         request.session['exam_completed'] = True
+    score = round(score, 1)
     # Lọc theo exam_code (Lưu ý kiểu dữ liệu: exam_code trong session có thể là str hoặc int)
     filtered_results = [r for r in results if str(r.get('exam_code')) == str(exam_code)]
 

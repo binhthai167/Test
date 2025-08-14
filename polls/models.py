@@ -46,10 +46,12 @@ class ExamCode(models.Model):
 class ExamResult(models.Model):
     username = models.CharField(max_length=100)
     email = models.EmailField(max_length=254, unique=True)
+    phone = models.CharField(max_length=15, blank=True, null=True)
+    supplier_company = models.CharField(max_length=100, blank=True, null=True)
     score = models.FloatField()
     submit_time = models.DateTimeField(auto_now_add=True)
     passed = models.BooleanField(default=False)  # Thêm trường này
 
     results = models.JSONField(default=list, blank=True)
     def __str__(self):
-        return f"{self.username}: {self.email} {self.score} ({self.submit_time}) ({'O' if self.passed else 'X'})"
+        return f"{self.username}: {self.email} {self.score:.1f} ({self.submit_time}) ({'O' if self.passed else 'X'})"

@@ -69,13 +69,18 @@ class ExamResultResource(resources.ModelResource):
 
 class ExamResultAdmin(ImportExportModelAdmin, admin.ModelAdmin):
     resource_class = ExamResultResource
-    list_display = ('username', 'email', 'score', 'passed', 'submit_time', )
+    list_display = ('username', 'email', 'phone', 'supplier_company', 'score_display', 'passed', 'submit_time', )
+    list_filter = ('passed', 'submit_time')
     readonly_fields = ('formatted_results',)
+
+    def score_display(self, obj):
+        return f"{obj.score:.1f}"
+    score_display.short_description = 'Score'
 
     def formatted_results(self, obj):
         if not obj.results:
             return "Chưa có dữ liệu kết quả."
-        
+
         html = "<ol>"
         for r in obj.results:
             question = r.get('question', 'Không có câu hỏi')
