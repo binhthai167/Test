@@ -5,6 +5,7 @@ from django.utils.html import format_html
 from import_export import resources, fields
 from .models import ExamResult
 import json
+import datetime
 # Register your models here.
 
 class ChoiceInline(admin.TabularInline):    
@@ -67,15 +68,47 @@ class ExamResultResource(resources.ModelResource):
         
         return "\n".join(lines) 
 
+
 class ExamResultAdmin(ImportExportModelAdmin, admin.ModelAdmin):
     resource_class = ExamResultResource
-    list_display = ('username', 'email', 'phone', 'supplier_company', 'score_display', 'passed', 'submit_time', )
-    list_filter = ('passed', 'submit_time')
+    list_display = ('username_display', 'email_display', 'phone_display', 'supplier_company_display', 'license_plate_display', 'score_display', 'passed_display', 'submit_time_display', )
+    list_filter = (
+        'passed', 
+        ('submit_time', admin.DateFieldListFilter),  # Filter theo ngày
+    )
     readonly_fields = ('formatted_results',)
+    date_hierarchy = 'submit_time'
 
+
+    def username_display(self, obj):
+        return obj.username or "Không có tên"
+    username_display.short_description = 'Họ và tên'
+    def email_display(self, obj):
+        return obj.email or "Không có email"
+    email_display.short_description = 'Email'
+    def phone_display(self, obj):
+        return obj.phone or "Không có số điện thoại"    
+    phone_display.short_description = 'Số điện thoại'
+    def supplier_company_display(self, obj):
+        return obj.supplier_company or "Không có công ty"
+    supplier_company_display.short_description = 'Công ty cung cấp'
+    def license_plate_display(self, obj):
+        return obj.license_plate or "Không có biển số xe"   
+    license_plate_display.short_description = 'Biển số xe'
     def score_display(self, obj):
         return f"{obj.score:.1f}"
-    score_display.short_description = 'Score'
+    score_display.short_description = 'Điểm'
+    score_display.admin_order_field = 'score'  # Cho phép sắp xếp theo điểm
+    def passed_display(self, obj):
+        return "Đạt" if obj.passed else "Không đạt" 
+    passed_display.short_description = 'Kết quả'
+    passed_display.admin_order_field = 'passed'  # Cho phép sắp xếp theo kết quả
+    def submit_time_display(self, obj):
+        return obj.submit_time.strftime('%Y-%m-%d %H:%M:%S') if obj.submit_time else "Chưa có thời gian"
+    submit_time_display.short_description = 'Thời gian nộp'
+    submit_time_display.admin_order_field = 'submit_time'  # Cho phép sắp xếp theo thời gian nộp
+    
+
 
     def formatted_results(self, obj):
         if not obj.results:

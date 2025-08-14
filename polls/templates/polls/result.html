@@ -9,49 +9,12 @@
 </head>
 <body>
 <div class="result-container">
-    <h2 class="result-title">🎉 Kết quả bài kiểm tra</h2>
+    <h2 class="result-title">🎉 Hoàn thành</h2>
     <div class="score-box">
         <span>{{username}}, </span>
-        <span>Điểm của bạn:</span>
-        <span class="score">{{ score }}</span>
+        <span>Chúng tôi đã nhận được câu trả lời của bạn</span>
        <!-- <span>Kết quả: <strong>{% if passed %}passed{% else %}failed{% endif %}</strong></span> -->
     </div>
-    <hr>
-    <div class="result-list">
-    {% for r in results %}
-    <div class="result-item">
-        <div class="result-question"><strong>{{ forloop.counter }}. {{ r.question }}</strong></div>
-        <div class="result-answer">
-            {% if r.question_type == "TEXT" %}
-                Bạn trả lời: <span class="selected-answer">{{ r.selected }}</span>
-                {% if r.correct_answer %}
-                    <!-- Chỉ hiển thị đáp án đúng và nhãn Đúng/Sai khi có đáp án cố định -->
-                    <div>Đáp án đúng: <span class="correct-answer">{{ r.correct_answer }}</span></div>
-                    {% if r.is_correct %}
-                        <span class="correct">✅ Đúng</span>
-                    {% else %}
-                        <span class="incorrect">❌ Sai</span>
-                    {% endif %}
-                {% else %}
-                    <!-- Câu mở: không hiển thị "Đúng/Sai".
-                         (Bạn có thể hiển thị điểm nội dung nếu đã lưu 'r.score') -->
-                    {% if r.score %}
-                        <div>Điểm: <strong>{{ r.score }}</strong></div>
-                    {% endif %}
-                {% endif %}
-            {% else %}
-                Bạn chọn: <span class="selected-answer">{{ r.selected }}</span>
-                {% if r.is_correct %}
-                    <span class="correct">✅ Đúng</span>
-                {% else %}
-                    <span class="incorrect">❌ Sai</span>
-                {% endif %}
-            {% endif %}
-        </div>
-    </div>
-    <hr>
-    {% endfor %}
-</div>
 
     <a href="{% url 'polls:home' %}" class="again-btn">về trang chủ</a>
 </div>

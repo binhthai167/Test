@@ -13,9 +13,6 @@ from datetime import datetime
 from .scoreforquestion import score_open_ended_answer
 
 
-
-
-
 def home(request):
     exam_date = request.session.get('exam_date')
     today_str = datetime.now().strftime('%Y-%m-%d')
@@ -139,6 +136,7 @@ def submit_exam(request, exam_code):
         email = request.POST.get('email', '').strip()
         phone = request.POST.get('phone', '').strip()
         supplier_company = request.POST.get('supplier_company', '').strip()
+        license_plate = request.POST.get('license_plate', '').strip()
         exam_code = request.POST.get('exam_code')
         exam_code_obj = get_object_or_404(ExamCode, code=exam_code)
         if not exam_code:
@@ -156,8 +154,7 @@ def submit_exam(request, exam_code):
         request.session['email'] = email
         request.session['phone'] = phone
         request.session['supplier_company'] = supplier_company
-        if email and ExamResult.objects.filter(email=email).exists():
-            return redirect('polls:result', exam_code=exam_code)        
+        request.session['license_plate'] = license_plate       
         questions = exam_code_obj.questions.all().order_by('question_text')
         score = 0
         score = round(score, 1)  # Làm tròn điểm số
@@ -212,6 +209,7 @@ def submit_exam(request, exam_code):
                 email=email,
                 phone=phone,
                 supplier_company=supplier_company,
+                license_plate=license_plate,
                 score=score,
                 passed=passed,
                 results=results
@@ -249,6 +247,7 @@ def result(request, exam_code):
         username = exam_result.username
         phone = exam_result.phone
         supplier_company = exam_result.supplier_company
+        license_plate = exam_result.license_plate
         passed = exam_result.passed
         request.session['exam_results'] = results
         request.session['score'] = score
@@ -256,6 +255,7 @@ def result(request, exam_code):
         request.session['email'] = email
         request.session['phone'] = phone
         request.session['supplier_company'] = supplier_company
+        request.session['license_plate'] = license_plate
         request.session['passed'] = passed
         request.session['exam_completed'] = True
     score = round(score, 1)

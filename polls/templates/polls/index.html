@@ -12,18 +12,20 @@
 <div class="poll-container">
     <h1 class="poll-title">📝 Kiểm tra đầu vào</h1>
     <div class="user-info-container">
-        <form method="post" action="{% url 'polls:submit_exam' exam_code.code %}">
+        <form id="submitAns" method="post" action="{% url 'polls:submit_exam' exam_code.code %}">
             {% csrf_token %}
             <div class="question-block">
                 <label for="username" class="question-text">👤 Nhập tên của bạn:</label>
-                <input type="text" id="username" name="username" class="input-text" placeholder="Ví dụ: Nguyễn Văn A" value="{{ request.session.username|default_if_none:'' }}" required>
+                <input type="text" id="username" name="username" class="input-text" placeholder="Ví dụ: Nguyễn Văn A" value="{{ request.session.username|default_if_none:'' }}"  required data-error="Vui lòng nhập họ và tên của bạn">
                 <label for = "phone" class="question-text">📞 Nhập số điện thoại của bạn:</label>
-                <input type="text" id="phone" name="phone" class="input-text" placeholder="0123456789" value="{{ request.session.phone|default_if_none:'' }}" required>
+                <input type="text" id="phone" name="phone" class="input-text" placeholder="0123456789" value="{{ request.session.phone|default_if_none:'' }}" required data-error="Vui lòng nhập số điện thoại của bạn">
                 
                 <label for="email" class="question-text">📧 Nhập email của bạn:</label>
-                <input type="email" id="email" name="email" class="input-text" placeholder="email@domain.com" value="{{ request.session.email|default_if_none:'' }}" required>
+                <input type="email" id="email" name="email" class="input-text" placeholder="email@domain.com" value="{{ request.session.email|default_if_none:'' }}" required data-error="Vui lòng nhập email của bạn">
                 <label for="supplier_company" class="question-text">🏢 Nhập tên công ty cung ứng: </label>
-                <input type="text" id="supplier_company" name="supplier_company" class="input-text" placeholder="Công ty TNHH ABC" value="{{ request.session.supplier_company|default_if_none:'' }}" required>
+                <input type="text" id="supplier_company" name="supplier_company" class="input-text" placeholder="Công ty TNHH ABC" value="{{ request.session.supplier_company|default_if_none:'' }}" required data-error="Vui lòng nhập tên công ty cung ứng của bạn">
+                <label for="license_plate" class="question-text">🚗 Nhập biển số xe (nếu có):</label>
+                <input type="text" id="license_plate" name="license_plate" class="input-text" placeholder="ABC-1234" value="{{ request.session.license_plate|default_if_none:'' }}" >
             </div>
             <br>
             
@@ -56,6 +58,24 @@
 </div>
 
 <script>
+    document.querySelectorAll("#submitAns input").forEach(input => {
+    // Khi input không hợp lệ
+    input.addEventListener("invalid", function (event) {
+        event.preventDefault(); // Ngăn thông báo mặc định
+        if (!input.validity.valid) {
+            input.setCustomValidity(input.dataset.error); // Lấy thông báo từ data-error
+        } else {
+            input.setCustomValidity("");
+        }
+        input.reportValidity();
+    });
+    // Khi input hợp lệ
+        input.addEventListener("input", function () {
+        input.setCustomValidity("");
+    });
+});
+
+   
     // Hàm lấy CSRF token từ cookie
     function getCookie(name) {
         let cookieValue = null;
