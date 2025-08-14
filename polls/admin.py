@@ -42,7 +42,43 @@ admin.site.register(ExamCode, ExamCodeAdmin)
 
 class ExamResultResource(resources.ModelResource):
     formatted_results = fields.Field(column_name='Chi tiết kết quả')
-
+    username = fields.Field(
+        column_name='Họ và tên',
+        attribute='username'
+    )
+    email = fields.Field(
+        column_name='Email liên hệ',
+        attribute='email'
+    )
+    phone = fields.Field(
+        column_name='Số điện thoại',
+        attribute='phone'
+    )
+    supplier_company = fields.Field(
+        column_name='Công ty cung cấp',
+        attribute='supplier_company'
+    )
+    license_plate = fields.Field(
+        column_name='Biển số xe',
+        attribute='license_plate'
+    )
+    score = fields.Field(
+        column_name='Điểm',
+        attribute='score'
+    )
+    passed = fields.Field(
+        column_name='Kết quả',
+        attribute='passed'
+    )
+    def dehydrate_passed(self, obj):
+        return "Đạt" if obj.passed else "Không đạt"
+    submit_time = fields.Field(
+        column_name='Thời gian nộp',
+        attribute='submit_time'
+    )
+    formatted_results = fields.Field(
+        column_name='Chi tiết kết quả'
+    )
     class Meta:
         model = ExamResult
         fields = (
