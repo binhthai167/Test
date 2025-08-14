@@ -49,6 +49,11 @@ def save_userInfo(request):
         return redirect('polls:index')
     return redirect('polls:home')
 def start_exam(request, exam_code):
+    today_str = datetime.now().strftime('%Y-%m-%d')
+    exam_date = request.session.get('exam_date')
+
+    if request.session.get('exam_completed') and exam_date == today_str:
+        return redirect('polls:result', exam_code=exam_code)
     exam_code_obj = get_object_or_404(ExamCode, code=exam_code)
     questions = exam_code_obj.questions.all().order_by('question_text')
     return render(request, 'polls/index.html', {
@@ -95,7 +100,10 @@ def save_text_answer(request):
 def index(request, exam_code):
     if request.session.get('exam_completed', False):
         return redirect('polls:result')
-
+    today_str = datetime.now().strftime('%Y-%m-%d')
+    exam_date = request.session.get('exam_date')
+    if request.session.get('exam_completed') and exam_date == today_str:
+        return redirect('polls:result', exam_code=exam_code)
     # Khởi tạo session nếu chưa có
     selected_choices = request.session.get('selected_choices', {})
     text_answers = request.session.get('text_answers', {})
