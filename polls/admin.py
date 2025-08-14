@@ -45,7 +45,17 @@ class ExamResultResource(resources.ModelResource):
 
     class Meta:
         model = ExamResult
-        fields = ('username', 'email', 'score', 'passed', 'submit_time', 'formatted_results')
+        fields = (
+            'username',
+            'email',
+            'phone',
+            'supplier_company',
+            'license_plate',
+            'score',
+            'passed',
+            'submit_time',
+            'formatted_results'
+        )
 
     def dehydrate_formatted_results(self, obj):
         if not obj.results:
