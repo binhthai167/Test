@@ -12,11 +12,11 @@ class Question(models.Model):
     question_type = models.CharField(
         max_length=10,
         choices=QUESTION_TYPES,
-        default='MCQ'
+        default='TEXT'
     )
     correct_answer = models.TextField(blank=True, null=True, help_text="Chỉ áp dụng cho câu hỏi dạng TEXT")
     keywords = models.TextField(blank=True, null=True)  # Từ khóa cho dạng mở, ví dụ: "dự án, đội nhóm"
-    max_score = models.FloatField(default=0)
+    max_score = models.FloatField(default=1)
     def __str__(self):
         return self.question_text
 

@@ -4,6 +4,7 @@ from .models import Question, Choice, ExamResult, ExamCode
 from django.utils.html import format_html
 from import_export import resources, fields
 from .models import ExamResult
+from django.utils.timezone import localtime
 # Register your models here.
 
 class ChoiceInline(admin.TabularInline):    
@@ -55,7 +56,7 @@ class ExamResultResource(resources.ModelResource):
         attribute='phone'
     )
     supplier_company = fields.Field(
-        column_name='Công ty cung cấp',
+        column_name='Công ty cung ứng',
         attribute='supplier_company'
     )
     license_plate = fields.Field(
@@ -135,7 +136,7 @@ class ExamResultAdmin(ImportExportModelAdmin, admin.ModelAdmin):
     phone_display.short_description = 'Số điện thoại'
     def supplier_company_display(self, obj):
         return obj.supplier_company or "Không có công ty"
-    supplier_company_display.short_description = 'Công ty cung cấp'
+    supplier_company_display.short_description = 'Công ty cung ứng'
     def license_plate_display(self, obj):
         return obj.license_plate or "Không có biển số xe"   
     license_plate_display.short_description = 'Biển số xe'
@@ -148,7 +149,7 @@ class ExamResultAdmin(ImportExportModelAdmin, admin.ModelAdmin):
     passed_display.short_description = 'Kết quả'
     passed_display.admin_order_field = 'passed'  # Cho phép sắp xếp theo kết quả
     def submit_time_display(self, obj):
-        return obj.submit_time.strftime('%Y-%m-%d %H:%M:%S') if obj.submit_time else "Chưa có thời gian"
+        return localtime(obj.submit_time).strftime('%Y-%m-%d %H:%M:%S') if obj.submit_time else "Chưa có thời gian"
     submit_time_display.short_description = 'Thời gian nộp'
     submit_time_display.admin_order_field = 'submit_time'  # Cho phép sắp xếp theo thời gian nộp
     

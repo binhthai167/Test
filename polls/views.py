@@ -156,13 +156,7 @@ def submit_exam(request, exam_code):
                 'selected_choices': request.session.get('selected_choices', {}),
                 'text_answers': request.session.get('text_answers', {}),
                 'error_message': 'Vui lòng nhập đầy đủ tên và email.'
-            })
-
-        request.session['username'] = username
-        request.session['email'] = email
-        request.session['phone'] = phone
-        request.session['supplier_company'] = supplier_company
-        request.session['license_plate'] = license_plate       
+            })      
         questions = exam_code_obj.questions.all().order_by('question_text')
         score = 0
         score = round(score, 1)  # Làm tròn điểm số
@@ -224,49 +218,28 @@ def submit_exam(request, exam_code):
             )
         except IntegrityError:
             return redirect('polls:result', exam_code=exam_code)
-        
-        request.session['exam_results'] = results
-        request.session['score'] = score
-        request.session['passed'] = passed
         request.session['exam_completed'] = True
         request.session['exam_date'] = datetime.now().strftime('%Y-%m-%d')
-        
-        # Xóa các session không còn cần thiết
-        if 'selected_choices' in request.session:
-            del request.session['selected_choices']
-        if 'text_answers' in request.session:
-            del request.session['text_answers']
-        
+        request.session['email'] = email
+        request.session['username'] = username
+        request.session.modified = True
         return redirect('polls:result', exam_code=exam_code)
     return redirect('polls:index', exam_code=exam_code)
 
 @never_cache
 def result(request, exam_code):
-    results = request.session.get('exam_results', [])
-    score = request.session.get('score', 0)
-    username = request.session.get('username', 'Người dùng')
-    passed = request.session.get('passed', False)
-
     email = request.session.get('email', '')
+    results = []         # <== thêm mặc định
+    score = 0
+    username = 'Người dùng'
+    passed = False
     if email and ExamResult.objects.filter(email=email).exists() and not results:
-        exam_result = ExamResult.objects.get(email=email)
+        exam_result = get_object_or_404(ExamResult, email=email)
         results = exam_result.results
-        score = exam_result.score
+        score = round(exam_result.score, 1)
         username = exam_result.username
-        phone = exam_result.phone
-        supplier_company = exam_result.supplier_company
-        license_plate = exam_result.license_plate
         passed = exam_result.passed
-        request.session['exam_results'] = results
-        request.session['score'] = score
-        request.session['username'] = username
-        request.session['email'] = email
-        request.session['phone'] = phone
-        request.session['supplier_company'] = supplier_company
-        request.session['license_plate'] = license_plate
-        request.session['passed'] = passed
-        request.session['exam_completed'] = True
-    score = round(score, 1)
+
     # Lọc theo exam_code (Lưu ý kiểu dữ liệu: exam_code trong session có thể là str hoặc int)
     filtered_results = [r for r in results if str(r.get('exam_code')) == str(exam_code)]
 

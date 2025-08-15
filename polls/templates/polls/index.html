@@ -6,6 +6,7 @@
     <meta charset="UTF-8">
     <title>Kiểm tra đầu vào</title>
     <link rel="stylesheet" type="text/css" href="{% static 'polls/index.css' %}">
+    <script src="{% static 'polls/index.js' %}"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
@@ -20,8 +21,8 @@
                 <label for = "phone" class="question-text">📞 Nhập số điện thoại của bạn:</label>
                 <input type="text" id="phone" name="phone" class="input-text" placeholder="0123456789" value="{{ request.session.phone|default_if_none:'' }}" required data-error="Vui lòng nhập số điện thoại của bạn">
                 
-                <label for="email" class="question-text">📧 Nhập email của bạn:</label>
-                <input type="email" id="email" name="email" class="input-text" placeholder="email@domain.com" value="{{ request.session.email|default_if_none:'' }}" required data-error="Vui lòng nhập email của bạn">
+                <label for="email" class="question-text">📧 Nhập email của bạn (nếu có):</label>
+                <input id="email" name="email" class="input-text" placeholder="email@domain.com" value="{{ request.session.email|default_if_none:'' }}" required data-error="Vui lòng nhập email của bạn">
                 <label for="supplier_company" class="question-text">🏢 Nhập tên công ty cung ứng: </label>
                 <input type="text" id="supplier_company" name="supplier_company" class="input-text" placeholder="Công ty TNHH ABC" value="{{ request.session.supplier_company|default_if_none:'' }}" required data-error="Vui lòng nhập tên công ty cung ứng của bạn">
                 <label for="license_plate" class="question-text">🚗 Nhập biển số xe (nếu có):</label>
@@ -35,7 +36,7 @@
                     <strong>{{ forloop.counter }}) {{ question.question_text }}</strong>
                 </p>
                 {% if question.question_type == 'TEXT' %}
-                    <textarea name="question_{{ question.id }}" rows="4" class="input-textarea" placeholder="Viết câu trả lời của bạn vào đây...">{{ text_answers|get_item:question.id|default_if_none:"" }}</textarea>
+                    <textarea name="question_{{ question.id }}" rows="3" class="input-textarea" placeholder="Viết câu trả lời của bạn vào đây...">{{ text_answers|get_item:question.id|default_if_none:"" }}</textarea>
                 {% else %}
                     <div class="choice-list">
                         {% for choice in question.choice_set.all %}
@@ -52,141 +53,15 @@
             </div>
             {% endfor %}
             <input type="hidden" name="exam_code" value="{{ exam_code.code }}">
-            <button type="submit" class="submit-btn">Nộp bài</button>
+            <button id="submit" type="submit" class="submit-btn">Nộp bài</button>
         </form>
     </div>
 </div>
-
+</body>
 <script>
-    document.querySelectorAll("#submitAns input").forEach(input => {
-    // Khi input không hợp lệ
-    input.addEventListener("invalid", function (event) {
-        event.preventDefault(); // Ngăn thông báo mặc định
-        if (!input.validity.valid) {
-            input.setCustomValidity(input.dataset.error); // Lấy thông báo từ data-error
-        } else {
-            input.setCustomValidity("");
-        }
-        input.reportValidity();
-    });
-    // Khi input hợp lệ
-        input.addEventListener("input", function () {
-        input.setCustomValidity("");
-    });
-});
-// Hàm debounce: chỉ thực hiện sau khi người dùng dừng gõ wait ms
-function debounce(func, wait) {
-    let timeout;
-    return function(...args) {
-        clearTimeout(timeout);
-        timeout = setTimeout(() => func.apply(this, args), wait);
-    };
-}
-   
-    // Hàm lấy CSRF token từ cookie
-    function getCookie(name) {
-        let cookieValue = null;
-        if (document.cookie && document.cookie !== '') {
-            const cookies = document.cookie.split(';');
-            for (let i = 0; i < cookies.length; i++) {
-                const cookie = cookies[i].trim();
-                if (cookie.startsWith(name + '=')) {
-                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                    break;
-                }
-            }
-        }
-        console.log("CSRF Token:", cookieValue); // Debug CSRF token
-        return cookieValue;
-    }
-    const csrftoken = getCookie('csrftoken');
-
-    // Lưu câu trả lời văn bản
-    document.querySelectorAll('textarea.input-textarea').forEach(function(textarea) {
-        textarea.addEventListener('input', function() {
-            const questionId = this.name.replace('question_', '');
-            const answerText = this.value;
-            saveTextAnswer(questionId, answerText);
-        });
-        // Khởi tạo: Gửi lại câu trả lời đã lưu từ session (nếu có) khi tải trang
-        // const questionId = textarea.name.replace('question_', '');
-        // if (textarea.value) {
-        //     saveTextAnswer(questionId, textarea.value);
-        // }
-    });
-
-    // Lưu câu trả lời trắc nghiệm
-    document.querySelectorAll('input[type=radio]').forEach(function(radio) {
-        radio.addEventListener('change', function() {
-            const questionId = this.name.replace('question_', '');
-            const choiceId = this.value;
-            saveChoice(questionId, choiceId);
-        });
-    });
-
-    // Hàm lưu câu trả lời văn bản qua AJAX
-    function saveTextAnswer(questionId, answerText) {
-        console.log("Saving text answer for question:", questionId, "Answer:", answerText);
-        fetch("{% url 'polls:save_text_answer' %}", {
-            method: "POST",
-            headers: {
-                "X-CSRFToken": csrftoken,
-                "Content-Type": "application/x-www-form-urlencoded"
-            },
-            body: "question_id=" + encodeURIComponent(questionId) +
-                  "&answer_text=" + encodeURIComponent(answerText)
-        })
-        .then(response => {
-            console.log("Save text response status:", response.status);
-            return response.json();
-        })
-        .then(data => {
-            if (data.status === 'ok') {
-                console.log("Text answer saved successfully:", data);
-                // Lưu vào localStorage như dự phòng
-            } else {
-                console.error("Error saving text answer:", data.message);
-                alert("Lỗi khi lưu câu trả lời văn bản: " + data.message);
-                localStorage.setItem('text_answer_' + questionId, answerText);
-            }
-        })
-        .catch(error => {
-            console.error("Error in saveTextAnswer:", error);
-            localStorage.setItem('text_answer_' + questionId, answerText);
-        });
-    }
-
-    // Hàm lưu câu trả lời trắc nghiệm qua AJAX
-    function saveChoice(questionId, choiceId) {
-        console.log("Saving choice for question:", questionId, "Choice:", choiceId);
-        fetch("{% url 'polls:save_choice' %}", {
-            method: "POST",
-            headers: {
-                "X-CSRFToken": csrftoken,
-                "Content-Type": "application/x-www-form-urlencoded"
-            },
-            body: "question_id=" + encodeURIComponent(questionId) +
-                  "&choice_id=" + encodeURIComponent(choiceId)
-        })
-        .then(response => {
-            console.log("Save choice response status:", response.status);
-            return response.json();
-        })
-        .then(data => {
-            if (data.status === 'ok') {
-                console.log("Choice saved successfully:", data);
-            } else {
-                console.error("Error saving choice:", data.message);
-                alert("Lỗi khi lưu câu trả lời trắc nghiệm: " + data.message);
-            }
-        })
-        .catch(error => {
-            console.error("Error in saveChoice:", error);
-            alert("Lỗi kết nối khi lưu câu trả lời trắc nghiệm.");
-        });
-    }
-
-    // Xử lý redirect khi đã hoàn thành bài thi
+        // --- Chuyển hướng nếu đã hoàn thành bài ---
+   // Xử lý redirect khi đã hoàn thành bài thi
+    document.addEventListener('DOMContentLoaded', function() {
     const examCompletedStr = "{{ exam_completed|default_if_none:'false' }}";
     const examCompleted = examCompletedStr.toLowerCase() === "true";
 
@@ -198,57 +73,8 @@ function debounce(func, wait) {
     window.addEventListener('pageshow', function(event) {
         if (event.persisted) {
             window.location.replace("{% url 'polls:result' exam_code.code %}");
-        }
-    });
-
-    // Lưu câu trả lời trước khi trang được tải lại hoặc đóng
-    window.addEventListener('beforeunload', function(event) {
-        document.querySelectorAll('textarea.input-textarea').forEach(function(textarea) {
-            const questionId = textarea.name.replace('question_', '');
-            const answerText = textarea.value;
-            if (answerText) {
-                console.log("Before unload: Saving text answer for question:", questionId);
-                saveTextAnswer(questionId, answerText);
-            }
-        });
-        document.querySelectorAll('input[type=radio]:checked').forEach(function(radio) {
-            const questionId = radio.name.replace('question_', '');
-            const choiceId = radio.value;
-            console.log("Before unload: Saving choice for question:", questionId);
-            saveChoice(questionId, choiceId);
-        });
-    });
-
-    // Tự động lưu câu trả lời mỗi 5 giây
-    setInterval(function() {
-        document.querySelectorAll('textarea.input-textarea').forEach(function(textarea) {
-            const questionId = textarea.name.replace('question_', '');
-            const answerText = textarea.value;
-            if (answerText) {
-                console.log("Periodic save: Saving text answer for question:", questionId);
-                saveTextAnswer(questionId, answerText);
-            }
-        });
-        document.querySelectorAll('input[type=radio]:checked').forEach(function(radio) {
-            const questionId = radio.name.replace('question_', '');
-            const choiceId = radio.value;
-            console.log("Periodic save: Saving choice for question:", questionId);
-            saveChoice(questionId, choiceId);
-        });
-    }, 5000); // Lưu mỗi 5 giây
-
-    // Khôi phục câu trả lời từ localStorage khi tải trang
-    document.addEventListener('DOMContentLoaded', function() {
-        document.querySelectorAll('textarea.input-textarea').forEach(function(textarea) {
-            const questionId = textarea.name.replace('question_', '');
-            const savedAnswer = localStorage.getItem('text_answer_' + questionId);
-            if (savedAnswer && !textarea.value) {
-                console.log("Restoring text answer from localStorage for question:", questionId);
-                textarea.value = savedAnswer;
-                saveTextAnswer(questionId, savedAnswer); // Gửi lại lên server
-            }
-        });
-    });
+    }
+});
+});
 </script>
-</body>
 </html>
