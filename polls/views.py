@@ -221,7 +221,7 @@ def submit_exam(request, exam_code):
                 passed=passed,
                 results=results
             )
-            submitted_at = timezone.now().strftime("%Y-%m-%d %H:%M:%S")
+            submitted_at = timezone.localtime(timezone.now()).strftime("%Y-%m-%d %H:%M:%S")
             results_str = "; ".join([f"{r['question']} -> {r['selected']}" for r in results])
             append_exam_result([
                 username,
