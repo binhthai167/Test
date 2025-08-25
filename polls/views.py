@@ -12,6 +12,11 @@ from django.views.decorators.csrf import csrf_exempt
 from datetime import datetime
 from .scoreforquestion import score_open_ended_answer
 
+from django.contrib.admin.views.decorators import staff_member_required
+from .google_sheets import append_exam_result
+from django.utils import timezone
+
+
 
 def home(request):
     exam_date = request.session.get('exam_date')
@@ -216,6 +221,20 @@ def submit_exam(request, exam_code):
                 passed=passed,
                 results=results
             )
+            submitted_at = timezone.now().strftime("%Y-%m-%d %H:%M:%S")
+            results_str = "; ".join([f"{r['question']} -> {r['selected']}" for r in results])
+            append_exam_result([
+                username,
+                phone,
+                email,             
+                supplier_company,
+                license_plate,
+                score,
+                "Đậu" if passed else "Rớt",
+                submitted_at,
+                results_str 
+    ])
+          
         except IntegrityError:
             return redirect('polls:result', exam_code=exam_code)
         request.session['exam_completed'] = True
@@ -233,15 +252,24 @@ def result(request, exam_code):
     score = 0
     username = 'Người dùng'
     passed = False
-    if email and ExamResult.objects.filter(email=email).exists() and not results:
-        exam_result = get_object_or_404(ExamResult, email=email)
-        results = exam_result.results
-        score = round(exam_result.score, 1)
-        username = exam_result.username
-        passed = exam_result.passed
+    
+    if email:
+        exam_result = (
+            ExamResult.objects.filter(email=email)
+            .order_by('-submit_time')  # mới nhất
+            .first()
+        )
+        if exam_result:
+            results = exam_result.results
+            score = round(exam_result.score, 1)
+            username = exam_result.username
+            passed = exam_result.passed
+       
 
     # Lọc theo exam_code (Lưu ý kiểu dữ liệu: exam_code trong session có thể là str hoặc int)
-    filtered_results = [r for r in results if str(r.get('exam_code')) == str(exam_code)]
+    filtered_results = [
+        r for r in results if str(r.get('exam_code')) == str(exam_code)
+    ]
 
     return render(request, 'polls/result.html', {
         'score': score,
