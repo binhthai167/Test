@@ -2,7 +2,7 @@ import gspread
 from google.oauth2.service_account import Credentials
 from datetime import datetime
 import os, json
-from google.oauth2.service_account import ServiceAccountCredentials
+
 
 # Scope: quyền truy cập Google Sheets
 SCOPES = ["https://www.googleapis.com/auth/spreadsheets"]
