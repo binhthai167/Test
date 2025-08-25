@@ -12,7 +12,8 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 
 from pathlib import Path
 import os
-import dj_database_url
+# import dj_database_url
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -79,7 +80,7 @@ WSGI_APPLICATION = 'mysite.wsgi.application'
 
 # DATABASES = {
 #     'default': dj_database_url.config(
-#         default='postgresql://pollsuer:pgeguQInM269tb1lslIAbkTy7juMdtyu@dpg-d2fbs26r433s73b597v0-a.oregon-postgres.render.com/polls_dpg1',
+#         default='postgresql://polls_8xja_user:iT1baqxiv6i3kZT1DGweLhP9XHnXoepz@dpg-d2m0jin5r7bs73e6j67g-a.oregon-postgres.render.com/polls_8xja',
 #         conn_max_age=600,
 #         ssl_require=True
 #     )

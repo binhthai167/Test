@@ -153,8 +153,6 @@ class ExamResultAdmin(ImportExportModelAdmin, admin.ModelAdmin):
     submit_time_display.short_description = 'Thời gian nộp'
     submit_time_display.admin_order_field = 'submit_time'  # Cho phép sắp xếp theo thời gian nộp
     
-
-
     def formatted_results(self, obj):
         if not obj.results:
             return "Chưa có dữ liệu kết quả."
