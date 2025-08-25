@@ -12,7 +12,6 @@ from django.views.decorators.csrf import csrf_exempt
 from datetime import datetime
 from .scoreforquestion import score_open_ended_answer
 
-from django.contrib.admin.views.decorators import staff_member_required
 from .google_sheets import append_exam_result
 from django.utils import timezone
 

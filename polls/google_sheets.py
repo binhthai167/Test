@@ -1,6 +1,6 @@
 import gspread
 from google.oauth2.service_account import Credentials
-from datetime import datetime
+from django.utils import timezone
 import os, json
 
 
@@ -36,6 +36,6 @@ def get_or_create_sheet(sheet_name):
   
 def append_exam_result(data):
     # Lấy tên sheet theo ngày hiện tại
-    today = datetime.now().strftime("%Y-%m-%d")
+    today = timezone.localtime(timezone.now()).strftime("%Y-%m-%d")
     sheet = get_or_create_sheet(today)
     sheet.append_row(data, value_input_option="USER_ENTERED")
