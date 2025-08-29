@@ -220,9 +220,10 @@ def submit_exam(request, exam_code):
                 passed=passed,
                 results=results
             )
-            submitted_at = timezone.localtime(timezone.now()).strftime("%Y-%m-%d %H:%M:%S")
+            submitted_at = timezone.localtime(timezone.now()).strftime("%d-%m-%Y")
             results_str = "; ".join([f"{r['question']} -> {r['selected']}" for r in results])
             append_exam_result([
+                submitted_at,
                 username,
                 phone,
                 email,             
@@ -230,7 +231,6 @@ def submit_exam(request, exam_code):
                 license_plate,
                 score,
                 "Đậu" if passed else "Rớt",
-                submitted_at,
                 results_str 
     ])
           
