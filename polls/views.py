@@ -182,7 +182,7 @@ def submit_exam(request, exam_code):
                 results.append({
                     'exam_code': exam_code,
                     'question': question.question_text,
-                    'selected': answer_text if answer_text else 'Không trả lời',
+                    'selected': answer_text if answer_text else 'x',
                     'correct_answer': question.correct_answer,
                     'question_type': 'TEXT',
                     'is_correct': is_correct
@@ -221,18 +221,21 @@ def submit_exam(request, exam_code):
                 results=results
             )
             submitted_at = timezone.localtime(timezone.now()).strftime("%d-%m-%Y")
-            results_str = "; ".join([f"{r['question']} -> {r['selected']}" for r in results])
-            append_exam_result([
+            row_data = [
                 submitted_at,
                 username,
                 phone,
-                email,             
+                email,
                 supplier_company,
                 license_plate,
                 score,
                 "Đậu" if passed else "Rớt",
-                results_str 
-    ])
+            ]    
+            last = results[-1]
+            row_data.append(f"{last['selected']}")     
+            results_str = "; ".join([f"{r['question']} -> {r['selected']}" for r in results])
+            row_data.append(results_str)    
+            append_exam_result(row_data)
           
         except IntegrityError:
             return redirect('polls:result', exam_code=exam_code)
