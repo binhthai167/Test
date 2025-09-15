@@ -233,7 +233,8 @@ def submit_exam(request, exam_code):
             ]    
             last = results[-1]
             row_data.append(f"{last['selected']}")     
-            results_str = "; ".join([f"{r['question']} -> {r['selected']}" for r in results])
+            results_str = "; ".join([f"{r['question']} -> {r['selected']}" for r in results[:-1]])
+
             row_data.append(results_str)    
             append_exam_result(row_data)
           
