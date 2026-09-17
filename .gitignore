@@ -4,3 +4,6 @@ staticfiles/
 .env
 *.json
 exam-result-system-7b9b00583bcf.json
+.venv/
+venv/
+env/

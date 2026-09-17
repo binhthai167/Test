@@ -1,42 +1,78 @@
 {% load static %}
 {% load custom_filters %}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <title>Kiểm tra đầu vào</title>
+    <title>
+        {% if exam_code.code == 'SAU_DAO_TAO_01' %}
+            Kiểm tra sau đào tạo
+        {% else %}
+            Kiểm tra đầu vào
+        {% endif %}
+    </title>
+    
+    <!-- Tích hợp font chữ hiện đại từ Google -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Gọi file CSS rời -->
     <link rel="stylesheet" type="text/css" href="{% static 'polls/index.css' %}">
+    
     <script src="{% static 'polls/index.js' %}"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
 <div class="poll-container">
-    <h1 class="poll-title">📝 Kiểm tra đầu vào</h1>
-    <div class="user-info-container">
-        <form id="submitAns" method="post" action="{% url 'polls:submit_exam' exam_code.code %}">
-            {% csrf_token %}
+    
+    <h1 class="poll-title">
+        {% if exam_code.code == 'SAU_DAO_TAO_01' %}
+            🎓 Kiểm tra sau đào tạo
+        {% else %}
+            📝 Kiểm tra đầu vào
+        {% endif %}
+    </h1>
+    
+    <form id="submitAns" method="post" action="{% url 'polls:submit_exam' exam_code.code %}">
+        {% csrf_token %}
+        
+        <!-- THÔNG TIN CÁ NHÂN -->
+        <div class="section-card">
+            <h2 class="section-title">📋 Thông tin cá nhân</h2>
             <div class="question-block">
-                <label for="username" class="question-text">👤 Nhập tên của bạn:</label>
-                <input type="text" id="username" name="username" class="input-text" placeholder="Ví dụ: Nguyễn Văn A" value="{{ request.session.username|default_if_none:'' }}"  required data-error="Vui lòng nhập họ và tên của bạn">
-                <label for = "phone" class="question-text">📞 Nhập số điện thoại của bạn:</label>
-                <input type="text" id="phone" name="phone" class="input-text" placeholder="0123456789" value="{{ request.session.phone|default_if_none:'' }}" required data-error="Vui lòng nhập số điện thoại của bạn">
+                <label for="username" class="question-text">👤 Họ và tên:</label>
+                <input type="text" id="username" name="username" class="input-text" placeholder="Ví dụ: Nguyễn Văn A" value="{{ request.session.username|default_if_none:'' }}" required data-error="Vui lòng nhập họ và tên của bạn">
                 
-                <label for="email" class="question-text">📧 Nhập email của bạn (nếu có):</label>
-                <input id="email" name="email" class="input-text" placeholder="email@domain.com" value="{{ request.session.email|default_if_none:'' }}" required data-error="Vui lòng nhập email của bạn">
-                <label for="supplier_company" class="question-text">🏢 Nhập tên công ty cung ứng: </label>
-                <input type="text" id="supplier_company" name="supplier_company" class="input-text" placeholder="Công ty TNHH ABC" value="{{ request.session.supplier_company|default_if_none:'' }}" required data-error="Vui lòng nhập tên công ty cung ứng của bạn">
-                <label for="license_plate" class="question-text">🚗 Nhập biển số xe (nếu có):</label>
-                <input type="text" id="license_plate" name="license_plate" class="input-text" placeholder="ABC-1234" value="{{ request.session.license_plate|default_if_none:'' }}" >
+                {% if exam_code.code == 'SAU_DAO_TAO_01' %}
+                    <label for="employee_id" class="question-text">🏷️ Mã số nhân viên:</label>
+                    <input type="text" id="employee_id" name="employee_id" class="input-text" placeholder="Ví dụ: NV12345" value="{{ request.session.employee_id|default_if_none:'' }}" required data-error="Vui lòng nhập mã số nhân viên">
+                {% else %}
+                    <label for="phone" class="question-text">📞 Số điện thoại:</label>
+                    <input type="text" id="phone" name="phone" class="input-text" placeholder="0123456789" value="{{ request.session.phone|default_if_none:'' }}" required data-error="Vui lòng nhập số điện thoại của bạn">
+                    
+                    <label for="email" class="question-text">📧 Email (nếu có):</label>
+                    <input id="email" name="email" class="input-text" placeholder="email@domain.com" value="{{ request.session.email|default_if_none:'' }}" required data-error="Vui lòng nhập email của bạn">
+                    
+                    <label for="supplier_company" class="question-text">🏢 Công ty cung ứng: </label>
+                    <input type="text" id="supplier_company" name="supplier_company" class="input-text" placeholder="Công ty TNHH ABC" value="{{ request.session.supplier_company|default_if_none:'' }}" required data-error="Vui lòng nhập tên công ty cung ứng của bạn">
+                    
+                    <label for="license_plate" class="question-text">🚗 Biển số xe (nếu có):</label>
+                    <input type="text" id="license_plate" name="license_plate" class="input-text" placeholder="ABC-1234" value="{{ request.session.license_plate|default_if_none:'' }}" >
+                {% endif %}
             </div>
-            <br>
-            
-            {% for question in questions %}
+        </div>
+
+        <!-- DANH SÁCH CÂU HỎI -->
+        {% for question in questions %}
+        <div class="section-card">
             <div class="question-block">
-                <p class="question-text">
-                    <strong>{{ forloop.counter }}) {{ question.question_text }}</strong>
+                <p class="question-text" style="font-size: 16px;">
+                    <strong>Câu {{ forloop.counter }}: {{ question.question_text }}</strong>
                 </p>
+                
                 {% if question.question_type == 'TEXT' %}
-                    <textarea name="question_{{ question.id }}" rows="3" class="input-textarea" placeholder="Viết câu trả lời của bạn vào đây...">{{ text_answers|get_item:question.id|default_if_none:"" }}</textarea>
+                    <textarea name="question_{{ question.id }}" class="input-textarea" placeholder="Viết câu trả lời của bạn vào đây...">{{ text_answers|get_item:question.id|default_if_none:"" }}</textarea>
                 {% else %}
                     <div class="choice-list">
                         {% for choice in question.choice_set.all %}
@@ -51,30 +87,30 @@
                     </div>
                 {% endif %}
             </div>
-            {% endfor %}
-            <input type="hidden" name="exam_code" value="{{ exam_code.code }}">
-            <button id="submit" type="submit" class="submit-btn">Nộp bài</button>
-        </form>
-    </div>
+        </div>
+        {% endfor %}
+        
+        <input type="hidden" name="exam_code" value="{{ exam_code.code }}">
+        <button id="submit" type="submit" class="submit-btn">🚀 Nộp bài kiểm tra</button>
+    </form>
 </div>
-</body>
+
 <script>
-        // --- Chuyển hướng nếu đã hoàn thành bài ---
-   // Xử lý redirect khi đã hoàn thành bài thi
+    // --- Chuyển hướng nếu đã hoàn thành bài ---
     document.addEventListener('DOMContentLoaded', function() {
-    const examCompletedStr = "{{ exam_completed|default_if_none:'false' }}";
-    const examCompleted = examCompletedStr.toLowerCase() === "true";
+        const examCompletedStr = "{{ exam_completed|default_if_none:'false' }}";
+        const examCompleted = examCompletedStr.toLowerCase() === "true";
 
-    if (examCompleted) {
-        window.location.replace("{% url 'polls:result' exam_code.code %}");
-    }
-
-    // Xử lý khi trang được load từ bộ nhớ cache của trình duyệt
-    window.addEventListener('pageshow', function(event) {
-        if (event.persisted) {
+        if (examCompleted) {
             window.location.replace("{% url 'polls:result' exam_code.code %}");
-    }
-});
-});
+        }
+
+        window.addEventListener('pageshow', function(event) {
+            if (event.persisted) {
+                window.location.replace("{% url 'polls:result' exam_code.code %}");
+            }
+        });
+    });
 </script>
+</body>
 </html>

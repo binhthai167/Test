@@ -1,135 +1,147 @@
-/* Khung chính */
+:root {
+    --primary-color: #0056b3;
+    --primary-hover: #004494;
+    --bg-color: #f4f7f6;
+    --card-bg: #ffffff;
+    --text-main: #333333;
+    --text-muted: #666666;
+    --border-color: #e0e0e0;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-main);
+    margin: 0;
+    padding: 20px 10px;
+    line-height: 1.6;
+}
+
 .poll-container {
     max-width: 800px;
-    margin: auto;
-    padding: 20px;
-    background: #fff;
-    border-radius: 12px;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-    font-family: 'Segoe UI', sans-serif;
-    box-sizing: border-box;
+    margin: 0 auto;
 }
 
-/* Tiêu đề */
 .poll-title {
     text-align: center;
-    font-size: clamp(1.4rem, 3vw, 1.8rem);
-    font-weight: bold;
-    margin-bottom: 20px;
-    color: #333;
+    color: var(--primary-color);
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 30px;
 }
 
-/* Khối thông tin người dùng */
-.user-info-container {
-    background: #fff;
-    padding: 20px;
+/* Styling cho các khối Card (Thông tin & Câu hỏi) */
+.section-card {
+    background: var(--card-bg);
+    padding: 25px;
     border-radius: 12px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.08);
-    margin-bottom: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    margin-bottom: 25px;
+    border-top: 4px solid var(--primary-color);
 }
 
-/* Khối câu hỏi */
-.question-block {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    margin-bottom: 20px;
-}
-
-.question-text {
-    font-size: clamp(1rem, 2.5vw, 1.1rem);
+.section-title {
+    font-size: 18px;
     font-weight: 600;
-    color: #333;
+    margin-top: 0;
+    margin-bottom: 20px;
+    color: var(--text-main);
+    border-bottom: 2px solid var(--bg-color);
+    padding-bottom: 10px;
 }
 
-/* Input & Textarea */
+.question-block {
+    margin-bottom: 20px;
+}
+
+/* Styling cho Form Input */
+.question-text {
+    display: block;
+    font-weight: 500;
+    margin-bottom: 8px;
+    color: var(--text-main);
+}
+
 .input-text, .input-textarea {
     width: 100%;
-    padding: 12px 14px;
-    font-size: 1rem;
-    font-family: inherit;
-    border: 1px solid #ccc;
+    padding: 12px 15px;
+    border: 1px solid var(--border-color);
     border-radius: 8px;
-    background-color: #fafafa;
+    font-size: 15px;
+    font-family: inherit;
     box-sizing: border-box;
-    transition: border-color 0.3s, box-shadow 0.3s;
+    transition: all 0.3s ease;
+    background-color: #fbfcff;
+    margin-bottom: 15px;
 }
 
 .input-text:focus, .input-textarea:focus {
+    border-color: var(--primary-color);
     outline: none;
-    border-color: #4a90e2;
-    box-shadow: 0 0 6px rgba(74, 144, 226, 0.4);
-    background-color: #fff;
+    box-shadow: 0 0 0 3px rgba(0, 86, 179, 0.15);
+    background-color: #ffffff;
 }
 
 .input-textarea {
-    min-height: 100px;
     resize: vertical;
+    min-height: 100px;
 }
 
-/* Danh sách lựa chọn */
+/* Styling cho Trắc nghiệm (Radio buttons) */
 .choice-list {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 10px;
 }
 
 .choice-label {
-    background: #f7f9fc;
-    padding: 10px;
-    border-radius: 8px;
-    cursor: pointer;
     display: flex;
     align-items: center;
-    gap: 8px;
-    transition: background 0.2s ease, transform 0.1s ease;
+    padding: 12px 15px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    background: #ffffff;
 }
 
 .choice-label:hover {
-    background: #eaf2ff;
-    transform: translateY(-1px);
+    background: #f0f7ff;
+    border-color: var(--primary-color);
 }
 
 .choice-label input[type="radio"] {
-    accent-color: #007bff;
+    margin-right: 12px;
+    transform: scale(1.2);
+    accent-color: var(--primary-color);
 }
 
-.choice-text {
-    font-size: clamp(0.95rem, 2vw, 1rem);
-    color: #333;
-}
-
-/* Nút submit */
+/* Styling cho Nút Submit */
 .submit-btn {
-    display: block;
-    width: 100%;
-    padding: 12px;
-    background-color: #007bff;
-    color: white;
+    background-color: var(--primary-color);
+    color: #ffffff;
+    font-size: 18px;
+    font-weight: 600;
     border: none;
     border-radius: 8px;
-    font-size: clamp(1rem, 2.5vw, 1.125rem);
+    padding: 15px 30px;
+    width: 100%;
     cursor: pointer;
-    transition: background 0.2s ease, transform 0.1s ease;
+    transition: background-color 0.3s ease;
+    margin-top: 10px;
+    box-shadow: 0 4px 6px rgba(0, 86, 179, 0.2);
 }
 
 .submit-btn:hover {
-    background-color: #0056b3;
-    transform: translateY(-2px);
+    background-color: var(--primary-hover);
 }
 
 /* Responsive */
-@media (max-width: 768px) {
-    .poll-container {
+@media (max-width: 600px) {
+    .section-card {
         padding: 15px;
     }
-}
-
-@media (max-width: 480px) {
     .poll-title {
-        margin-bottom: 15px;
-    }
-    .question-block {
-        gap: 8px;
+        font-size: 24px;
     }
 }

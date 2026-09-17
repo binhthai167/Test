@@ -1,22 +1,49 @@
 {% load static %}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <title>Trang chủ</title>
+    <title>Trang chủ - Hệ thống Kiểm tra</title>
     <link rel="stylesheet" href="{% static 'polls/home.css' %}">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
 <div class="poll-container">
-    <h1 class="poll-title">📝 Bài kiểm tra đầu vào</h1>
-    {% if random_exam_code %}
-        <a href="{% url 'polls:start_exam' random_exam_code %}" class="start-link">
-            <button type="button" class="submit-btn">🚀 Bắt đầu</button>
-        </a>
-    {% else %}
-        <p class="no-exam">⚠️ Chưa có bài kiểm tra nào để bắt đầu.</p>
-    {% endif %}
+    <h1 class="poll-title">📋 Lựa chọn Bài kiểm tra</h1>
+
+    <div class="exam-options">
+        <!-- Khối: Bài kiểm tra đầu vào -->
+        <div class="exam-card">
+            <h2>📝 Kiểm tra đầu vào</h2>
+            <p>Đánh giá năng lực ban đầu.</p>
+            
+            {% if entrance_completed %}
+                <button type="button" class="submit-btn disabled-btn" disabled>✅ Đã hoàn thành</button>
+            {% elif entrance_exam_code %}
+                <a href="{% url 'polls:start_exam' entrance_exam_code %}" class="start-link">
+                    <button type="button" class="submit-btn">🚀 Bắt đầu</button>
+                </a>
+            {% else %}
+                <p class="no-exam">⚠️ Chưa có bài kiểm tra đầu vào.</p>
+            {% endif %}
+        </div>
+
+        <!-- Khối: Bài kiểm tra sau đào tạo -->
+        <div class="exam-card">
+            <h2>🎓 Kiểm tra sau đào tạo</h2>
+            <p>Đánh giá kết quả sau khi hoàn thành khóa học.</p>
+            
+            {% if post_training_completed %}
+                <button type="button" class="submit-btn disabled-btn" disabled>✅ Đã hoàn thành</button>
+            {% elif post_training_exam_code %}
+                <a href="{% url 'polls:start_exam' post_training_exam_code %}" class="start-link">
+                    <button type="button" class="submit-btn btn-secondary">🚀 Bắt đầu</button>
+                </a>
+            {% else %}
+                <p class="no-exam">⚠️ Chưa có bài kiểm tra sau đào tạo.</p>
+            {% endif %}
+        </div>
+    </div>
 </div>
 </body>
 </html>
