@@ -188,7 +188,6 @@ def submit_exam(request, exam_code):
             # 1. Bài sau đào tạo: Bắt buộc có Họ tên và Mã NV
             if not username or not employee_id:
                 return render(request, 'polls/index.html', {
-                    # Đã sửa thành order_by('id')
                     'questions': exam_code_obj.questions.all().order_by('id'),
                     'selected_choices': request.session.get('selected_choices', {}),
                     'text_answers': request.session.get('text_answers', {}),
@@ -205,7 +204,6 @@ def submit_exam(request, exam_code):
             # 2. Bài Đầu vào: Bắt buộc có Họ tên và Email
             if not username or not email:
                 return render(request, 'polls/index.html', {
-                    # Đã sửa thành order_by('id')
                     'questions': exam_code_obj.questions.all().order_by('id'),
                     'selected_choices': request.session.get('selected_choices', {}),
                     'text_answers': request.session.get('text_answers', {}),
@@ -214,7 +212,6 @@ def submit_exam(request, exam_code):
                 })
 
         # --- BẮT ĐẦU TÍNH ĐIỂM ---
-        # Đã sửa thành order_by('id')
         questions = exam_code_obj.questions.all().order_by('id')
         score = 0
         results = []
@@ -277,7 +274,7 @@ def submit_exam(request, exam_code):
             
             # Phân tách dữ liệu đẩy lên Sheet tùy theo loại bài
             if exam_code == 'SAU_DAO_TAO_01':
-                # Bài Sau đào tạo: Cột SDT gán bằng employee_id, bỏ hẳn Email, Công ty, Biển số
+                # BÀI SAU ĐÀO TẠO
                 row_data = [
                     submitted_at, 
                     username, 
@@ -285,8 +282,15 @@ def submit_exam(request, exam_code):
                     score,        
                     "Đậu" if passed else "Rớt",
                 ]
+                
+                # Mỗi câu hỏi đẩy vào 1 cột riêng biệt
+                for r in results:
+                    row_data.append(r['selected'])  
+                    
+                target_sheet = "Đầu ra"
+                
             else:
-                # Bài Đầu vào: Đẩy đầy đủ thông tin bình thường
+                # BÀI ĐẦU VÀO
                 row_data = [
                     submitted_at, 
                     username, 
@@ -297,16 +301,27 @@ def submit_exam(request, exam_code):
                     score, 
                     "Đậu" if passed else "Rớt",
                 ]    
-            
-            # Thêm các câu trả lời vào row_data
-            for r in results:
-                row_data.append(r['selected'])  
-            
-            # Gửi vào Sheet Đầu ra / Đầu vào
-            if exam_code == 'SAU_DAO_TAO_01':
-                target_sheet = "Đầu ra"
-            else:
+                
+                # Tách riêng câu "Kinh nghiệm" và dồn các câu "Toán"
+                kinh_nghiem_ans = ""
+                math_answers = []
+                
+                for r in results:
+                    # Nếu tên câu hỏi có chữ "kinh nghiệm"
+                    if "kinh nghiệm" in r['question'].lower():
+                        kinh_nghiem_ans = r['selected']
+                    else:
+                        # Các câu còn lại (toán) dồn vào 1 cục
+                        math_answers.append(f"{r['question']} -> {r['selected']}")
+                        
+                # Đưa câu kinh nghiệm vào cột riêng
+                row_data.append(kinh_nghiem_ans)
+                # Đưa toàn bộ phép toán vào cột cuối cùng
+                row_data.append("; ".join(math_answers))
+                
                 target_sheet = "Đầu vào"
+                
+            # Gửi vào Sheet Đầu ra / Đầu vào
             append_exam_result(row_data, target_sheet)
           
         except IntegrityError:
