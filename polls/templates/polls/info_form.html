@@ -5,12 +5,17 @@
     <meta charset="UTF-8">
     <title>Cập nhật Sơ yếu lý lịch</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Font chữ -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Thư viện lịch Flatpickr -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link rel="stylesheet" type="text/css" href="https://npmcdn.com/flatpickr/dist/themes/material_green.css">
     
     <style>
         :root {
-            --primary-color: #0056b3;
-            --primary-hover: #004494;
+            /* Tone màu xanh lá của Nidec */
+            --primary-color: #009944; 
+            --primary-hover: #007a36;
             --bg-color: #f4f7f6;
             --card-bg: #ffffff;
             --text-main: #333333;
@@ -24,7 +29,10 @@
             padding: 20px 10px; 
         }
         .form-container { max-width: 800px; margin: 0 auto; }
+        
+        /* CSS cho Logo và Header */
         .form-header { text-align: center; margin-bottom: 30px; }
+        .company-logo { max-width: 200px; height: auto; margin-bottom: 15px; }
         .form-header h1 { color: var(--primary-color); font-size: 26px; margin-bottom: 10px; }
         .form-header p { color: #d9534f; font-weight: bold; }
         
@@ -40,19 +48,19 @@
         }
         .form-group { margin-bottom: 15px; }
         label { display: block; font-weight: 500; margin-bottom: 8px; }
-        input[type="text"], input[type="date"], input[type="number"], select { 
+        input[type="text"], input[type="number"], select { 
             width: 100%; padding: 12px 15px; border: 1px solid var(--border-color); 
             border-radius: 8px; font-size: 15px; font-family: inherit; 
             box-sizing: border-box; background-color: #fbfcff; 
         }
         input:focus, select:focus { 
             border-color: var(--primary-color); outline: none; 
-            box-shadow: 0 0 0 3px rgba(0, 86, 179, 0.15); background-color: #ffffff; 
+            box-shadow: 0 0 0 3px rgba(0, 153, 68, 0.15); background-color: #ffffff; 
         }
         .submit-btn { 
             background-color: var(--primary-color); color: #ffffff; 
             font-size: 18px; font-weight: 600; border: none; border-radius: 8px; 
-            padding: 15px 30px; width: 100%; cursor: pointer; margin-top: 10px; 
+            padding: 15px 30px; width: 100%; cursor: pointer; margin-top: 10px; transition: 0.3s;
         }
         .submit-btn:hover { background-color: var(--primary-hover); }
         .two-cols { display: flex; gap: 15px; }
@@ -63,6 +71,9 @@
 <body>
 <div class="form-container">
     <div class="form-header">
+        <!-- Ảnh Logo Nidec (Đảm bảo bạn đã lưu file nidec_logo.png trong thư mục static/images) -->
+        <img src="{% static 'images/nidec_logo.png' %}" alt="Nidec Logo" class="company-logo" onerror="this.style.display='none'">
+        
         <h1>PHIẾU THU THẬP THÔNG TIN</h1>
         <span style="color: #666; font-size: 14px;">Nhằm cập nhật thông tin Sơ yếu lý lịch, đặc biệt thông tin địa chỉ sau sáp nhập.</span>
     </div>
@@ -70,6 +81,8 @@
     {% if success_message %}
     <div style="background-color: #d4edda; color: #155724; padding: 20px; border-radius: 8px; text-align: center; margin-bottom: 20px;">
         <h2>{{ success_message }}</h2>
+        <br>
+        <a href="{% url 'polls:home' %}" style="color: var(--primary-color); font-weight: bold; text-decoration: none;">&larr; Quay lại trang chủ</a>
     </div>
     {% else %}
     <form method="post" action="{% url 'polls:submit_info_form' %}">
@@ -91,7 +104,8 @@
             <div class="two-cols">
                 <div class="form-group">
                     <label>Ngày tháng năm sinh</label>
-                    <input type="date" name="ngay_sinh" required>
+                    <!-- Dùng type="text" và class="datepicker" để kích hoạt lịch Flatpickr -->
+                    <input type="text" name="ngay_sinh" class="datepicker" placeholder="dd/mm/yyyy" required>
                 </div>
                 <div class="form-group">
                     <label>Nơi sinh</label>
@@ -104,11 +118,32 @@
             <div class="two-cols">
                 <div class="form-group">
                     <label>Dân tộc</label>
-                    <input type="text" name="dan_toc" required>
+                    <select name="dan_toc" required>
+                        <option value="">-- Chọn Dân tộc --</option>
+                        <option value="Kinh">Kinh</option>
+                        <option value="Tày">Tày</option>
+                        <option value="Thái">Thái</option>
+                        <option value="Mường">Mường</option>
+                        <option value="Khmer">Khmer</option>
+                        <option value="Hoa">Hoa</option>
+                        <option value="Nùng">Nùng</option>
+                        <option value="H'Mông">H'Mông</option>
+                        <option value="Khác">Khác</option>
+                    </select>
                 </div>
                 <div class="form-group">
                     <label>Tôn giáo</label>
-                    <input type="text" name="ton_giao" required>
+                    <select name="ton_giao" required>
+                        <option value="">-- Chọn Tôn giáo --</option>
+                        <option value="Không">Không</option>
+                        <option value="Phật giáo">Phật giáo</option>
+                        <option value="Công giáo">Công giáo</option>
+                        <option value="Cao Đài">Cao Đài</option>
+                        <option value="Hòa Hảo">Hòa Hảo</option>
+                        <option value="Tin Lành">Tin Lành</option>
+                        <option value="Hồi giáo">Hồi giáo</option>
+                        <option value="Khác">Khác</option>
+                    </select>
                 </div>
             </div>
         </div>
@@ -123,7 +158,7 @@
             <div class="two-cols">
                 <div class="form-group">
                     <label>Ngày cấp</label>
-                    <input type="date" name="ngay_cap_cccd" required>
+                    <input type="text" name="ngay_cap_cccd" class="datepicker" placeholder="dd/mm/yyyy" required>
                 </div>
                 <div class="form-group">
                     <label>Nơi cấp CCCD</label>
@@ -136,7 +171,7 @@
             </div>
         </div>
 
-        <!-- THÔNG TIN ĐỊA CHỈ (Dropdowns for Local JSON API) -->
+        <!-- THÔNG TIN ĐỊA CHỈ -->
         <div class="section-card">
             <h2 class="section-title">3. Thông tin địa chỉ (Sau sáp nhập)</h2>
             
@@ -147,7 +182,8 @@
                     <select id="tt_tinh" required><option value="">Đang tải dữ liệu...</option></select>
                     <select id="tt_xa" required disabled><option value="">-- Chọn Phường/Xã/Quận/Huyện --</option></select>
                 </div>
-                <input type="text" id="tt_sonha" placeholder="Nhập số nhà, tên đường, thôn/xóm..." required>
+                <!-- Đã thêm name="tt_sonha" -->
+                <input type="text" id="tt_sonha" name="tt_sonha" placeholder="Nhập số nhà, tên đường, thôn/xóm..." required>
                 <input type="hidden" name="thuong_tru" id="thuong_tru_hidden">
             </div>
 
@@ -162,7 +198,8 @@
                     <select id="tam_tinh" required><option value="">Đang tải dữ liệu...</option></select>
                     <select id="tam_xa" required disabled><option value="">-- Chọn Phường/Xã/Quận/Huyện --</option></select>
                 </div>
-                <input type="text" id="tam_sonha" placeholder="Nhập số nhà, tên đường, thôn/xóm, phòng trọ..." required>
+                <!-- Đã thêm name="tam_sonha" -->
+                <input type="text" id="tam_sonha" name="tam_sonha" placeholder="Nhập số nhà, tên đường, thôn/xóm, phòng trọ..." required>
                 <input type="hidden" name="tam_tru" id="tam_tru_hidden">
             </div>
         </div>
@@ -225,22 +262,31 @@
     {% endif %}
 </div>
 
+<!-- Scripts -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="https://npmcdn.com/flatpickr/dist/l10n/vn.js"></script>
+
 <script>
     document.addEventListener("DOMContentLoaded", function() {
+        // --- 1. KHỞI TẠO LỊCH FLATPICKR ---
+        flatpickr(".datepicker", {
+            dateFormat: "d/m/Y",
+            locale: "vn",
+            allowInput: true
+        });
+
+        // --- 2. XỬ LÝ API TỈNH/XÃ (V2) ---
         const host = "https://provinces.open-api.vn/api/v2/";
         
-        // Load the states logic for fetching from api 
         const callAPI = (api, selectId) => {
             return axios.get(api).then((response) => {
                 renderData(response.data, selectId);
             });
         }
         
-        // Fetch wards (or whatever subdivisions v2 returns) directly under province
         const callApiWard = (api, selectId) => {
             return axios.get(api).then((response) => {
-                // Notice we are passing response.data.wards here, as specified in the v2 API docs
                 renderData(response.data.wards, selectId);
             });
         }
@@ -258,24 +304,22 @@
             document.querySelector("#" + selectId).innerHTML = row;
         }
 
-        // Initialize states on load
+        // Tải danh sách Tỉnh lúc mới mở trang
         callAPI(host + "?depth=1", "tt_tinh");
         callAPI(host + "?depth=1", "tam_tinh");
         callAPI(host + "?depth=1", "ns_tinh");
 
-        // Set the listeners for changes on Address fields
+        // Khi đổi tỉnh thường trú -> Gọi Xã
         document.querySelector("#tt_tinh").addEventListener("change", function() {
-            // Directly fetch wards for the province using depth=2
             callApiWard(host + "p/" + this.value + "?depth=2", "tt_xa");
         });
 
-        // Set the listeners for changes on Temporary Address fields
+        // Khi đổi tỉnh tạm trú -> Gọi Xã
         document.querySelector("#tam_tinh").addEventListener("change", function() {
-            // Directly fetch wards for the province using depth=2
             callApiWard(host + "p/" + this.value + "?depth=2", "tam_xa");
         });
 
-        // Toggle checkbox interaction
+        // --- 3. COPY ĐỊA CHỈ ---
         document.querySelector("#copy_address").addEventListener("change", function() {
             if (this.checked) {
                 document.querySelector("#tam_tinh").innerHTML = document.querySelector("#tt_tinh").innerHTML;
@@ -289,7 +333,7 @@
             }
         });
 
-        // 5. GOM DỮ LIỆU ĐỂ GỬI LÊN SERVER
+        // --- 4. GOM DỮ LIỆU ĐỂ GỬI LÊN VIEW.PY ---
         const form = document.querySelector("form");
         if(form){
             form.addEventListener("submit", function(e) {
@@ -298,13 +342,16 @@
                     return sel.options[sel.selectedIndex] ? sel.options[sel.selectedIndex].getAttribute("data-name") : "";
                 };
                 
+                // Lấy Text Nơi sinh
                 document.getElementById("noi_sinh_hidden").value = getText("ns_tinh");
 
+                // Gom địa chỉ Thường trú (Gửi đi theo dạng: Số nhà, Phường Xã, Tỉnh)
                 const tt_sonha = document.getElementById("tt_sonha").value;
                 const tt_xa = getText("tt_xa");
                 const tt_tinh = getText("tt_tinh");
                 document.getElementById("thuong_tru_hidden").value = `${tt_sonha}, ${tt_xa}, ${tt_tinh}`;
 
+                // Gom địa chỉ Tạm trú
                 const tam_sonha = document.getElementById("tam_sonha").value;
                 const tam_xa = getText("tam_xa");
                 const tam_tinh = getText("tam_tinh");
