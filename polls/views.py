@@ -369,3 +369,59 @@ def result(request, exam_code):
 
 def loaderio_verification(request):
     return HttpResponse("loaderio-d62c75f95bb592331c05c414e7ba073a", content_type="text/plain")
+
+@never_cache
+def submit_info_form(request):
+    if request.method == 'POST':
+        # 1. Lấy tất cả dữ liệu người dùng nhập từ file info_form.html
+        ho_ten = request.POST.get('ho_ten', '')
+        msnv = request.POST.get('msnv', '')
+        ngay_sinh = request.POST.get('ngay_sinh', '')
+        noi_sinh = request.POST.get('noi_sinh', '')
+        dan_toc = request.POST.get('dan_toc', '')
+        ton_giao = request.POST.get('ton_giao', '')
+        cccd = request.POST.get('cccd', '')
+        ngay_cap_cccd = request.POST.get('ngay_cap_cccd', '')
+        noi_cap_cccd = request.POST.get('noi_cap_cccd', '')
+        thuong_tru = request.POST.get('thuong_tru', '')
+        tt_sonha = request.POST.get('tt_sonha', '')
+        tam_tru = request.POST.get('tam_tru', '')
+        tam_sonha = request.POST.get('tam_sonha', '')
+        trinh_do = request.POST.get('trinh_do', '')
+        ten_truong = request.POST.get('ten_truong', '')
+        nganh_hoc = request.POST.get('nganh_hoc', '')
+        nam_tot_nghiep = request.POST.get('nam_tot_nghiep', '')
+        nguoi_than = request.POST.get('nguoi_than', '')
+        moi_quan_he = request.POST.get('moi_quan_he', '')
+        sdt_nguoi_than = request.POST.get('sdt_nguoi_than', '')
+        
+        # 2. Lấy thời gian hiện tại
+        submitted_at = timezone.localtime(timezone.now()).strftime("%d-%m-%Y %H:%M:%S")
+
+        # 3. Đóng gói dữ liệu thành 1 dòng (row) theo đúng thứ tự các cột
+        row_data = [
+            submitted_at, ho_ten, msnv, ngay_sinh, noi_sinh, dan_toc, ton_giao,
+            cccd, ngay_cap_cccd, noi_cap_cccd, thuong_tru, tam_tru,
+            trinh_do, ten_truong, nganh_hoc, nam_tot_nghiep, 
+            nguoi_than, moi_quan_he, sdt_nguoi_than
+        ]
+
+        # 4. Tận dụng hàm Google Sheets có sẵn để đẩy thẳng dữ liệu lên (Bỏ qua lưu Database)
+        try:
+            print("Đang chuẩn bị đẩy dữ liệu lên sheet: Thông tin SYLL")
+            print("Dữ liệu gồm có:", row_data)
+            
+            append_exam_result(row_data, "Thông tin SYLL")
+            
+            print("Đã đẩy dữ liệu thành công!")
+        except Exception as e:
+            # IN LỖI RA MÀN HÌNH CONSOLE ĐỂ KIỂM TRA
+            print(f" >>> CÓ LỖI KHI ĐẨY LÊN GOOGLE SHEETS: {e}") 
+            
+        # 5. Trả về thông báo thành công sau khi nộp
+        return render(request, 'polls/info_form.html', {
+            'success_message': 'Cảm ơn bạn! Thông tin Sơ yếu lý lịch đã được ghi nhận thành công.'
+        })
+
+    # Nếu người dùng mới bấm vào link (truy cập bình thường - GET request), hiển thị form trống
+    return render(request, 'polls/info_form.html')

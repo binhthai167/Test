@@ -15,4 +15,7 @@ urlpatterns = [
 
     path('polls/<str:exam_code>/', views.start_exam, name='start_exam'),
     path('loaderio-d62c75f95bb592331c05c414e7ba073a/', views.loaderio_verification),
+
+
+    path('syll/', views.submit_info_form, name='submit_info_form'),
 ] 

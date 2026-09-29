@@ -1,0 +1,311 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Cập nhật Sơ yếu lý lịch</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-color: #0056b3;
+            --primary-hover: #004494;
+            --bg-color: #f4f7f6;
+            --card-bg: #ffffff;
+            --text-main: #333333;
+            --border-color: #e0e0e0;
+        }
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background-color: var(--bg-color); 
+            color: var(--text-main); 
+            margin: 0; 
+            padding: 20px 10px; 
+        }
+        .form-container { max-width: 800px; margin: 0 auto; }
+        .form-header { text-align: center; margin-bottom: 30px; }
+        .form-header h1 { color: var(--primary-color); font-size: 26px; margin-bottom: 10px; }
+        .form-header p { color: #d9534f; font-weight: bold; }
+        
+        .section-card { 
+            background: var(--card-bg); padding: 25px; border-radius: 12px; 
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-bottom: 25px; 
+            border-top: 4px solid var(--primary-color); 
+        }
+        .section-title { 
+            font-size: 18px; font-weight: 600; margin-top: 0; 
+            margin-bottom: 20px; border-bottom: 2px solid var(--bg-color); 
+            padding-bottom: 10px; 
+        }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; font-weight: 500; margin-bottom: 8px; }
+        input[type="text"], input[type="date"], input[type="number"], select { 
+            width: 100%; padding: 12px 15px; border: 1px solid var(--border-color); 
+            border-radius: 8px; font-size: 15px; font-family: inherit; 
+            box-sizing: border-box; background-color: #fbfcff; 
+        }
+        input:focus, select:focus { 
+            border-color: var(--primary-color); outline: none; 
+            box-shadow: 0 0 0 3px rgba(0, 86, 179, 0.15); background-color: #ffffff; 
+        }
+        .submit-btn { 
+            background-color: var(--primary-color); color: #ffffff; 
+            font-size: 18px; font-weight: 600; border: none; border-radius: 8px; 
+            padding: 15px 30px; width: 100%; cursor: pointer; margin-top: 10px; 
+        }
+        .submit-btn:hover { background-color: var(--primary-hover); }
+        .two-cols { display: flex; gap: 15px; }
+        .two-cols .form-group { flex: 1; }
+        @media (max-width: 600px) { .two-cols { flex-direction: column; gap: 0; } }
+    </style>
+</head>
+<body>
+<div class="form-container">
+    <div class="form-header">
+        <h1>PHIẾU THU THẬP THÔNG TIN</h1>
+        <span style="color: #666; font-size: 14px;">Nhằm cập nhật thông tin Sơ yếu lý lịch, đặc biệt thông tin địa chỉ sau sáp nhập.</span>
+    </div>
+
+    {% if success_message %}
+    <div style="background-color: #d4edda; color: #155724; padding: 20px; border-radius: 8px; text-align: center; margin-bottom: 20px;">
+        <h2>{{ success_message }}</h2>
+    </div>
+    {% else %}
+    <form method="post" action="{% url 'polls:submit_info_form' %}">
+        {% csrf_token %}
+        
+        <!-- THÔNG TIN CƠ BẢN -->
+        <div class="section-card">
+            <h2 class="section-title">1. Thông tin cá nhân</h2>
+            <div class="two-cols">
+                <div class="form-group">
+                    <label>Họ và tên</label>
+                    <input type="text" name="ho_ten" required>
+                </div>
+                <div class="form-group">
+                    <label>Mã số nhân viên (MSNV)</label>
+                    <input type="text" name="msnv" required>
+                </div>
+            </div>
+            <div class="two-cols">
+                <div class="form-group">
+                    <label>Ngày tháng năm sinh</label>
+                    <input type="date" name="ngay_sinh" required>
+                </div>
+                <div class="form-group">
+                    <label>Nơi sinh</label>
+                    <input type="text" name="noi_sinh" required>
+                </div>
+            </div>
+            <div class="two-cols">
+                <div class="form-group">
+                    <label>Dân tộc</label>
+                    <input type="text" name="dan_toc" required>
+                </div>
+                <div class="form-group">
+                    <label>Tôn giáo</label>
+                    <input type="text" name="ton_giao" required>
+                </div>
+            </div>
+        </div>
+
+        <!-- THÔNG TIN CCCD -->
+        <div class="section-card">
+            <h2 class="section-title">2. Thông tin Căn cước công dân</h2>
+            <div class="form-group">
+                <label>Số CCCD</label>
+                <input type="text" name="cccd" required>
+            </div>
+            <div class="two-cols">
+                <div class="form-group">
+                    <label>Ngày cấp</label>
+                    <input type="date" name="ngay_cap_cccd" required>
+                </div>
+                <div class="form-group">
+                    <label>Nơi cấp CCCD</label>
+                    <select name="noi_cap_cccd" required>
+                        <option value="">-- Chọn nơi cấp --</option>
+                        <option value="Cục Cảnh Sát QLHC và TTXH">Cục Cảnh Sát QLHC và TTXH</option>
+                        <option value="Bộ Công an">Bộ Công an</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- THÔNG TIN ĐỊA CHỈ (Dropdowns for Local JSON API) -->
+        <div class="section-card">
+            <h2 class="section-title">3. Thông tin địa chỉ (Sau sáp nhập)</h2>
+            
+            <!-- ĐỊA CHỈ THƯỜNG TRÚ -->
+            <div class="form-group" style="background: #f9fbfd; padding: 15px; border-radius: 8px; border: 1px solid #e0e0e0;">
+                <label style="color: var(--primary-color);">Địa chỉ thường trú</label>
+                <div class="two-cols" style="margin-bottom: 10px;">
+                    <select id="tt_tinh" required><option value="">Đang tải dữ liệu...</option></select>
+                    <select id="tt_xa" required disabled><option value="">-- Chọn Phường/Xã/Quận/Huyện --</option></select>
+                </div>
+                <input type="text" id="tt_sonha" name="tt_sonha" placeholder="Nhập số nhà, tên đường, thôn/xóm..." required>
+                <input type="hidden" name="thuong_tru" id="thuong_tru_hidden">
+            </div>
+
+            <!-- ĐỊA CHỈ TẠM TRÚ -->
+            <div class="form-group" style="background: #f9fbfd; padding: 15px; border-radius: 8px; border: 1px solid #e0e0e0;">
+                <label style="color: var(--primary-color);">Địa chỉ tạm trú</label>
+                <div style="margin-bottom: 10px;">
+                    <input type="checkbox" id="copy_address" style="cursor: pointer;"> 
+                    <label for="copy_address" style="display: inline; cursor: pointer; font-weight: normal; color: #555;">Giống địa chỉ thường trú</label>
+                </div>
+                <div class="two-cols" style="margin-bottom: 10px;">
+                    <select id="tam_tinh" required><option value="">Đang tải dữ liệu...</option></select>
+                    <select id="tam_xa" required disabled><option value="">-- Chọn Phường/Xã/Quận/Huyện --</option></select>
+                </div>
+                <input type="text" id="tam_sonha" name="tam_sonha" placeholder="Nhập số nhà, tên đường, thôn/xóm, phòng trọ..." required>
+                <input type="hidden" name="tam_tru" id="tam_tru_hidden">
+            </div>
+        </div>
+
+        <!-- TRÌNH ĐỘ HỌC VẤN -->
+        <div class="section-card">
+            <h2 class="section-title">4. Trình độ học vấn</h2>
+            <div class="two-cols">
+                <div class="form-group">
+                    <label>Trình độ</label>
+                    <select name="trinh_do" required>
+                        <option value="">-- Chọn trình độ --</option>
+                        <option value="Tiểu học">Tiểu học</option>
+                        <option value="THCS">THCS</option>
+                        <option value="THPT">THPT</option>
+                        <option value="Trung cấp">Trung cấp</option>
+                        <option value="Cao đẳng">Cao đẳng</option>
+                        <option value="Đại học">Đại học</option>
+                        <option value="Trên đại học">Trên đại học (Cao học/Thạc sỹ/Tiến sỹ)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Năm tốt nghiệp</label>
+                    <input type="number" name="nam_tot_nghiep" placeholder="Ví dụ: 2020">
+                </div>
+            </div>
+            <div class="two-cols">
+                <div class="form-group">
+                    <label>Tên trường</label>
+                    <input type="text" name="ten_truong">
+                </div>
+                <div class="form-group">
+                    <label>Ngành học</label>
+                    <input type="text" name="nganh_hoc">
+                </div>
+            </div>
+        </div>
+
+        <!-- LIÊN HỆ KHẨN CẤP -->
+        <div class="section-card">
+            <h2 class="section-title">5. Người liên hệ khẩn cấp</h2>
+            <div class="form-group">
+                <label>Họ tên người thân</label>
+                <input type="text" name="nguoi_than" required>
+            </div>
+            <div class="two-cols">
+                <div class="form-group">
+                    <label>Mối quan hệ</label>
+                    <input type="text" name="moi_quan_he" placeholder="Cha, mẹ, vợ, chồng..." required>
+                </div>
+                <div class="form-group">
+                    <label>Số điện thoại</label>
+                    <input type="text" name="sdt_nguoi_than" required>
+                </div>
+            </div>
+        </div>
+
+        <button type="submit" class="submit-btn">Gửi thông tin</button>
+    </form>
+    {% endif %}
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const host = "https://provinces.open-api.vn/api/v2/";
+        
+        // Load the states logic for fetching from api 
+        const callAPI = (api, selectId) => {
+            return axios.get(api).then((response) => {
+                renderData(response.data, selectId);
+            });
+        }
+        
+        // Fetch wards (or whatever subdivisions v2 returns) directly under province
+        const callApiWard = (api, selectId) => {
+            return axios.get(api).then((response) => {
+                // Notice we are passing response.data.wards here, as specified in the v2 API docs
+                renderData(response.data.wards, selectId);
+            });
+        }
+
+        const renderData = (array, selectId) => {
+            let row = '<option disabled value="" selected>-- Chọn giá trị --</option>';
+            if (array && array.length > 0) {
+                array.forEach(element => {
+                    row += `<option value="${element.code}" data-name="${element.name}">${element.name}</option>`;
+                });
+                document.querySelector("#" + selectId).disabled = false;
+            } else {
+                document.querySelector("#" + selectId).disabled = true;
+            }
+            document.querySelector("#" + selectId).innerHTML = row;
+        }
+
+        // Initialize states on load
+        callAPI(host + "?depth=1", "tt_tinh");
+        callAPI(host + "?depth=1", "tam_tinh");
+
+        // Set the listeners for changes on Address fields
+        document.querySelector("#tt_tinh").addEventListener("change", function() {
+            // Directly fetch wards for the province using depth=2
+            callApiWard(host + "p/" + this.value + "?depth=2", "tt_xa");
+        });
+
+        // Set the listeners for changes on Temporary Address fields
+        document.querySelector("#tam_tinh").addEventListener("change", function() {
+            // Directly fetch wards for the province using depth=2
+            callApiWard(host + "p/" + this.value + "?depth=2", "tam_xa");
+        });
+
+        // Toggle checkbox interaction
+        document.querySelector("#copy_address").addEventListener("change", function() {
+            if (this.checked) {
+                document.querySelector("#tam_tinh").innerHTML = document.querySelector("#tt_tinh").innerHTML;
+                document.querySelector("#tam_tinh").value = document.querySelector("#tt_tinh").value;
+                
+                document.querySelector("#tam_xa").innerHTML = document.querySelector("#tt_xa").innerHTML;
+                document.querySelector("#tam_xa").value = document.querySelector("#tt_xa").value;
+                document.querySelector("#tam_xa").disabled = document.querySelector("#tt_xa").disabled;
+                
+                document.querySelector("#tam_sonha").value = document.querySelector("#tt_sonha").value;
+            }
+        });
+
+        // 5. GOM DỮ LIỆU ĐỂ GỬI LÊN SERVER
+        const form = document.querySelector("form");
+        if(form){
+            form.addEventListener("submit", function(e) {
+                const getText = (selectId) => {
+                    const sel = document.getElementById(selectId);
+                    return sel.options[sel.selectedIndex] ? sel.options[sel.selectedIndex].getAttribute("data-name") : "";
+                };
+
+                const tt_sonha = document.getElementById("tt_sonha").value;
+                const tt_xa = getText("tt_xa");
+                const tt_tinh = getText("tt_tinh");
+                document.getElementById("thuong_tru_hidden").value = `${tt_sonha}, ${tt_xa}, ${tt_tinh}`;
+
+                const tam_sonha = document.getElementById("tam_sonha").value;
+                const tam_xa = getText("tam_xa");
+                const tam_tinh = getText("tam_tinh");
+                document.getElementById("tam_tru_hidden").value = `${tam_sonha}, ${tam_xa}, ${tam_tinh}`;
+            });
+        }
+    });
+</script>
+</body>
+</html>
