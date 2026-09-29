@@ -63,13 +63,16 @@
 <body>
 <div class="form-container">
     <div class="form-header">
-        <h1>PHIẾU THU THẬP THÔNG TIN</h1>
+        <h1>📋 PHIẾU THU THẬP THÔNG TIN</h1>
+        <p>Vui lòng hoàn thành trước 15h ngày 29/09/2026</p>
         <span style="color: #666; font-size: 14px;">Nhằm cập nhật thông tin Sơ yếu lý lịch, đặc biệt thông tin địa chỉ sau sáp nhập.</span>
     </div>
 
     {% if success_message %}
     <div style="background-color: #d4edda; color: #155724; padding: 20px; border-radius: 8px; text-align: center; margin-bottom: 20px;">
-        <h2>{{ success_message }}</h2>
+        <h2>✅ {{ success_message }}</h2>
+        <br>
+        <a href="{% url 'polls:home' %}" style="color: #0056b3; font-weight: bold; text-decoration: none;">&larr; Quay lại trang chủ</a>
     </div>
     {% else %}
     <form method="post" action="{% url 'polls:submit_info_form' %}">
@@ -86,6 +89,19 @@
                 <div class="form-group">
                     <label>Mã số nhân viên (MSNV)</label>
                     <input type="text" name="msnv" required>
+                </div>
+            </div>
+            <div class="two-cols">
+                <div class="form-group">
+                    <label>Ngày tháng năm sinh</label>
+                    <input type="date" name="ngay_sinh" required>
+                </div>
+                <div class="form-group">
+                    <label>Nơi sinh</label>
+                    <select id="ns_tinh" required>
+                        <option value="">Đang tải dữ liệu...</option>
+                    </select>
+                    <input type="hidden" name="noi_sinh" id="noi_sinh_hidden">
                 </div>
             </div>
             <div class="two-cols">
@@ -112,7 +128,7 @@
 
         <!-- THÔNG TIN CCCD -->
         <div class="section-card">
-            <h2 class="section-title">2. Thông tin Căn cước công dân</h2>
+            <h2 class="section-title">🪪 2. Thông tin Căn cước công dân</h2>
             <div class="form-group">
                 <label>Số CCCD</label>
                 <input type="text" name="cccd" required>
@@ -135,7 +151,7 @@
 
         <!-- THÔNG TIN ĐỊA CHỈ (Dropdowns for Local JSON API) -->
         <div class="section-card">
-            <h2 class="section-title">3. Thông tin địa chỉ (Sau sáp nhập)</h2>
+            <h2 class="section-title">📍 3. Thông tin địa chỉ (Sau sáp nhập)</h2>
             
             <!-- ĐỊA CHỈ THƯỜNG TRÚ -->
             <div class="form-group" style="background: #f9fbfd; padding: 15px; border-radius: 8px; border: 1px solid #e0e0e0;">
@@ -144,7 +160,7 @@
                     <select id="tt_tinh" required><option value="">Đang tải dữ liệu...</option></select>
                     <select id="tt_xa" required disabled><option value="">-- Chọn Phường/Xã/Quận/Huyện --</option></select>
                 </div>
-                <input type="text" id="tt_sonha" name="tt_sonha" placeholder="Nhập số nhà, tên đường, thôn/xóm..." required>
+                <input type="text" id="tt_sonha" placeholder="Nhập số nhà, tên đường, thôn/xóm..." required>
                 <input type="hidden" name="thuong_tru" id="thuong_tru_hidden">
             </div>
 
@@ -159,14 +175,14 @@
                     <select id="tam_tinh" required><option value="">Đang tải dữ liệu...</option></select>
                     <select id="tam_xa" required disabled><option value="">-- Chọn Phường/Xã/Quận/Huyện --</option></select>
                 </div>
-                <input type="text" id="tam_sonha" name="tam_sonha" placeholder="Nhập số nhà, tên đường, thôn/xóm, phòng trọ..." required>
+                <input type="text" id="tam_sonha" placeholder="Nhập số nhà, tên đường, thôn/xóm, phòng trọ..." required>
                 <input type="hidden" name="tam_tru" id="tam_tru_hidden">
             </div>
         </div>
 
         <!-- TRÌNH ĐỘ HỌC VẤN -->
         <div class="section-card">
-            <h2 class="section-title">4. Trình độ học vấn</h2>
+            <h2 class="section-title">🎓 4. Trình độ học vấn</h2>
             <div class="two-cols">
                 <div class="form-group">
                     <label>Trình độ</label>
@@ -200,7 +216,7 @@
 
         <!-- LIÊN HỆ KHẨN CẤP -->
         <div class="section-card">
-            <h2 class="section-title">5. Người liên hệ khẩn cấp</h2>
+            <h2 class="section-title">📞 5. Người liên hệ khẩn cấp</h2>
             <div class="form-group">
                 <label>Họ tên người thân</label>
                 <input type="text" name="nguoi_than" required>
@@ -217,7 +233,7 @@
             </div>
         </div>
 
-        <button type="submit" class="submit-btn">Gửi thông tin</button>
+        <button type="submit" class="submit-btn">🚀 Gửi thông tin</button>
     </form>
     {% endif %}
 </div>
@@ -258,6 +274,7 @@
         // Initialize states on load
         callAPI(host + "?depth=1", "tt_tinh");
         callAPI(host + "?depth=1", "tam_tinh");
+        callAPI(host + "?depth=1", "ns_tinh");
 
         // Set the listeners for changes on Address fields
         document.querySelector("#tt_tinh").addEventListener("change", function() {
@@ -293,6 +310,8 @@
                     const sel = document.getElementById(selectId);
                     return sel.options[sel.selectedIndex] ? sel.options[sel.selectedIndex].getAttribute("data-name") : "";
                 };
+                
+                document.getElementById("noi_sinh_hidden").value = getText("ns_tinh");
 
                 const tt_sonha = document.getElementById("tt_sonha").value;
                 const tt_xa = getText("tt_xa");
