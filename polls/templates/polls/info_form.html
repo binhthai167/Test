@@ -63,16 +63,13 @@
 <body>
 <div class="form-container">
     <div class="form-header">
-        <h1>📋 PHIẾU THU THẬP THÔNG TIN</h1>
-        <p>Vui lòng hoàn thành trước 15h ngày 29/09/2026</p>
+        <h1>PHIẾU THU THẬP THÔNG TIN</h1>
         <span style="color: #666; font-size: 14px;">Nhằm cập nhật thông tin Sơ yếu lý lịch, đặc biệt thông tin địa chỉ sau sáp nhập.</span>
     </div>
 
     {% if success_message %}
     <div style="background-color: #d4edda; color: #155724; padding: 20px; border-radius: 8px; text-align: center; margin-bottom: 20px;">
-        <h2>✅ {{ success_message }}</h2>
-        <br>
-        <a href="{% url 'polls:home' %}" style="color: #0056b3; font-weight: bold; text-decoration: none;">&larr; Quay lại trang chủ</a>
+        <h2>{{ success_message }}</h2>
     </div>
     {% else %}
     <form method="post" action="{% url 'polls:submit_info_form' %}">
@@ -118,7 +115,7 @@
 
         <!-- THÔNG TIN CCCD -->
         <div class="section-card">
-            <h2 class="section-title">🪪 2. Thông tin Căn cước công dân</h2>
+            <h2 class="section-title">2. Thông tin Căn cước công dân</h2>
             <div class="form-group">
                 <label>Số CCCD</label>
                 <input type="text" name="cccd" required>
@@ -141,7 +138,7 @@
 
         <!-- THÔNG TIN ĐỊA CHỈ (Dropdowns for Local JSON API) -->
         <div class="section-card">
-            <h2 class="section-title">📍 3. Thông tin địa chỉ (Sau sáp nhập)</h2>
+            <h2 class="section-title">3. Thông tin địa chỉ (Sau sáp nhập)</h2>
             
             <!-- ĐỊA CHỈ THƯỜNG TRÚ -->
             <div class="form-group" style="background: #f9fbfd; padding: 15px; border-radius: 8px; border: 1px solid #e0e0e0;">
@@ -172,7 +169,7 @@
 
         <!-- TRÌNH ĐỘ HỌC VẤN -->
         <div class="section-card">
-            <h2 class="section-title">🎓 4. Trình độ học vấn</h2>
+            <h2 class="section-title">4. Trình độ học vấn</h2>
             <div class="two-cols">
                 <div class="form-group">
                     <label>Trình độ</label>
@@ -206,7 +203,7 @@
 
         <!-- LIÊN HỆ KHẨN CẤP -->
         <div class="section-card">
-            <h2 class="section-title">📞 5. Người liên hệ khẩn cấp</h2>
+            <h2 class="section-title">5. Người liên hệ khẩn cấp</h2>
             <div class="form-group">
                 <label>Họ tên người thân</label>
                 <input type="text" name="nguoi_than" required>
@@ -223,7 +220,7 @@
             </div>
         </div>
 
-        <button type="submit" class="submit-btn">🚀 Gửi thông tin</button>
+        <button type="submit" class="submit-btn">Gửi thông tin</button>
     </form>
     {% endif %}
 </div>
