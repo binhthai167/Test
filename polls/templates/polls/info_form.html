@@ -403,6 +403,14 @@
                 const tam_xa = getText("tam_xa");
                 const tam_tinh = getText("tam_tinh");
                 document.getElementById("tam_tru_hidden").value = `${tam_sonha}, ${tam_xa}, ${tam_tinh}`;
+
+                const submitBtn = form.querySelector('.submit-btn');
+                if (submitBtn) {
+                    submitBtn.disabled = true;
+                    submitBtn.innerHTML = "Đang xử lý xin chờ...";
+                    submitBtn.style.backgroundColor = "#cccccc"; 
+                    submitBtn.style.cursor = "not-allowed";
+                }
             });
         }
     });
