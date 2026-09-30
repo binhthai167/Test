@@ -372,6 +372,11 @@ def loaderio_verification(request):
 
 @never_cache
 def submit_info_form(request):
+    if request.session.get('info_submitted', False):
+        return render(request, 'polls/info_form.html', {
+            'success_message': 'Bạn đã nộp Sơ yếu lý lịch thành công trước đó. Hệ thống đã ghi nhận, vui lòng không nộp lại!'
+        })
+
     if request.method == 'POST':
         # 1. Lấy tất cả dữ liệu người dùng nhập từ file info_form.html
         ho_ten = request.POST.get('ho_ten', '')
@@ -412,16 +417,14 @@ def submit_info_form(request):
             print("Dữ liệu gồm có:", row_data)
             
             append_exam_result(row_data, "Thông tin SYLL")
-            
+            request.session['info_submitted'] = True
             print("Đã đẩy dữ liệu thành công!")
         except Exception as e:
             # IN LỖI RA MÀN HÌNH CONSOLE ĐỂ KIỂM TRA
             print(f" >>> CÓ LỖI KHI ĐẨY LÊN GOOGLE SHEETS: {e}") 
             
-        # 5. Trả về thông báo thành công sau khi nộp
-        return render(request, 'polls/info_form.html', {
-            'success_message': 'Cảm ơn bạn! Thông tin Sơ yếu lý lịch đã được ghi nhận thành công.'
-        })
+        return redirect('polls:submit_info_form')
+            
 
     # Nếu người dùng mới bấm vào link (truy cập bình thường - GET request), hiển thị form trống
     return render(request, 'polls/info_form.html')
