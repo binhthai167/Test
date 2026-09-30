@@ -13,23 +13,23 @@ SERVICE_ACCOUNT_FILE = "exam-result-system-d8f57ca5d189.json"
 # ID của Google Sheet (lấy từ URL)
 SPREADSHEET_ID = "1pTzsTRZBfM2gY1GDcEWafO5GadTSoDqRvJhVMP9hKHI"
 
-# def get_client():
-#     # 1. Comment hoặc xoá 2 dòng đọc biến môi trường này đi
-#     # service_account_info = json.loads(os.environ["GOOGLE_CREDS"])
-#     # creds = Credentials.from_service_account_info(service_account_info, scopes=SCOPES)
-    
-#     # 2. Mở comment (bỏ dấu #) ở dòng dưới đây để đọc trực tiếp từ file JSON của bạn
-#     creds = Credentials.from_service_account_file(SERVICE_ACCOUNT_FILE, scopes=SCOPES)
-    
-#     client = gspread.authorize(creds)
-#     return client
-
 def get_client():
-    service_account_info = json.loads(os.environ["GOOGLE_CREDS"])
-    creds = Credentials.from_service_account_info(service_account_info, scopes=SCOPES)
-    # creds = Credentials.from_service_account_file(SERVICE_ACCOUNT_FILE, scopes=SCOPES)
+    # 1. Comment hoặc xoá 2 dòng đọc biến môi trường này đi
+    # service_account_info = json.loads(os.environ["GOOGLE_CREDS"])
+    # creds = Credentials.from_service_account_info(service_account_info, scopes=SCOPES)
+    
+    # 2. Mở comment (bỏ dấu #) ở dòng dưới đây để đọc trực tiếp từ file JSON của bạn
+    creds = Credentials.from_service_account_file(SERVICE_ACCOUNT_FILE, scopes=SCOPES)
+    
     client = gspread.authorize(creds)
     return client
+
+# def get_client():
+#     service_account_info = json.loads(os.environ["GOOGLE_CREDS"])
+#     creds = Credentials.from_service_account_info(service_account_info, scopes=SCOPES)
+#     # creds = Credentials.from_service_account_file(SERVICE_ACCOUNT_FILE, scopes=SCOPES)
+#     client = gspread.authorize(creds)
+#     return client
 
 
 # THÊM THAM SỐ sheet_name VÀO HÀM NÀY

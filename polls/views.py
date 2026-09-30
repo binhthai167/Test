@@ -381,6 +381,7 @@ def submit_info_form(request):
         # 1. Lấy tất cả dữ liệu người dùng nhập từ file info_form.html
         ho_ten = request.POST.get('ho_ten', '')
         msnv = request.POST.get('msnv', '')
+        sdt = request.POST.get('sdt', '')
         ngay_sinh = request.POST.get('ngay_sinh', '')
         noi_sinh = request.POST.get('noi_sinh', '')
         dan_toc = request.POST.get('dan_toc', '')
@@ -405,7 +406,7 @@ def submit_info_form(request):
 
         # 3. Đóng gói dữ liệu thành 1 dòng (row) theo đúng thứ tự các cột
         row_data = [
-            submitted_at, ho_ten, msnv, ngay_sinh, noi_sinh, dan_toc, ton_giao,
+            submitted_at, ho_ten, msnv, sdt, ngay_sinh, noi_sinh, dan_toc, ton_giao, 
             cccd, ngay_cap_cccd, noi_cap_cccd, thuong_tru, tam_tru,
             trinh_do, ten_truong, nganh_hoc, nam_tot_nghiep, 
             nguoi_than, moi_quan_he, sdt_nguoi_than

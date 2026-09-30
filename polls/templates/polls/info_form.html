@@ -103,10 +103,16 @@
             </div>
             <div class="two-cols">
                 <div class="form-group">
+                    <label>Số điện thoại cá nhân</label>
+                    <input type="text" name="sdt" required>
+                </div>
+                <div class="form-group">
                     <label>Ngày tháng năm sinh</label>
                     <!-- Dùng type="text" và class="datepicker" để kích hoạt lịch Flatpickr -->
                     <input type="text" name="ngay_sinh" class="datepicker" placeholder="dd/mm/yyyy" required>
                 </div>
+            </div>
+            <div class="two-cols">
                 <div class="form-group">
                     <label>Nơi sinh</label>
                     <select id="ns_tinh" required>
@@ -114,8 +120,8 @@
                     </select>
                     <input type="hidden" name="noi_sinh" id="noi_sinh_hidden">
                 </div>
-            </div>
-            <div class="two-cols">
+                <!-- Để giữ bố cục 2 cột, thêm một div trống nếu dân tộc được đưa xuống hàng dưới, 
+                     tuy nhiên ở đây ta sẽ sắp xếp lại Dân tộc và Tôn giáo cho vừa -->
                 <div class="form-group">
                     <label>Dân tộc</label>
                     <select name="dan_toc" required>
@@ -177,6 +183,8 @@
                         <option value="Khác">Khác</option>
                     </select>
                 </div>
+            </div>
+            <div class="two-cols">
                 <div class="form-group">
                     <label>Tôn giáo</label>
                     <select name="ton_giao" required>
