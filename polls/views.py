@@ -329,7 +329,21 @@ def submit_exam(request, exam_code):
         except IntegrityError:
             return redirect('polls:result', exam_code=exam_code)
             
-        request.session[f'completed_{exam_code}'] = True 
+        if exam_code == 'SAU_DAO_TAO_01':
+            # 1. BÀI ĐẦU RA: Nếu đậu thì khóa, rớt thì cho làm lại
+            if passed:
+                request.session[f'completed_{exam_code}'] = True 
+            else:
+                request.session[f'completed_{exam_code}'] = False 
+                # Xóa sạch đáp án cũ để công nhân làm lại từ đầu (trắc nghiệm không bị dính đáp án cũ)
+                if 'selected_choices' in request.session:
+                    del request.session['selected_choices']
+                if 'text_answers' in request.session:
+                    del request.session['text_answers']
+        else:
+            # 2. BÀI ĐẦU VÀO: Làm xong là khóa luôn, không quan tâm điểm số
+            request.session[f'completed_{exam_code}'] = True 
+        # --- KẾT THÚC ĐOẠN SỬA ---
         request.session['exam_date'] = datetime.now().strftime('%Y-%m-%d')
         request.session['email'] = email
         request.session['username'] = username
