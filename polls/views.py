@@ -15,7 +15,9 @@ from .scoreforquestion import score_open_ended_answer
 from .google_sheets import append_exam_result
 from django.utils import timezone
 
-
+def blank_home(request):
+    # Hàm này chỉ trả về một chuỗi rỗng, trình duyệt sẽ hiện một trang trắng tinh
+    return HttpResponse("")
 def home(request):
     exam_date = request.session.get('exam_date')
     today_str = datetime.now().strftime('%Y-%m-%d')
@@ -400,6 +402,19 @@ def submit_info_form(request):
         nguoi_than = request.POST.get('nguoi_than', '')
         moi_quan_he = request.POST.get('moi_quan_he', '')
         sdt_nguoi_than = request.POST.get('sdt_nguoi_than', '')
+
+        cac_truong_bat_buoc = [
+            ho_ten, msnv, sdt, ngay_sinh, noi_sinh, 
+            dan_toc, ton_giao, cccd, ngay_cap_cccd, noi_cap_cccd,
+            tt_sonha, thuong_tru, tam_sonha, tam_tru,
+            trinh_do, nam_tot_nghiep,
+            nguoi_than, moi_quan_he, sdt_nguoi_than
+        ]
+        if not all(cac_truong_bat_buoc):
+            return render(request, 'polls/info_form.html', {
+                'error_message': 'Vui lòng điền đầy đủ tất cả các trường thông tin Sơ yếu lý lịch (Không được bỏ trống ô nào)!',
+                'data': request.POST 
+            })
         
         # 2. Lấy thời gian hiện tại
         submitted_at = timezone.localtime(timezone.now()).strftime("%d-%m-%Y %H:%M:%S")

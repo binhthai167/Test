@@ -77,6 +77,11 @@
         <h1>PHIẾU THU THẬP THÔNG TIN</h1>
         <span style="color: #666; font-size: 14px;">Nhằm cập nhật thông tin Sơ yếu lý lịch, đặc biệt thông tin địa chỉ sau sáp nhập.</span>
     </div>
+    {% if error_message %}
+        <div style="background-color: #f8d7da; color: #721c24; padding: 15px; border-radius: 8px; border: 1px solid #f5c6cb; margin-bottom: 20px; text-align: center; font-weight: 500;">
+            ⚠️ {{ error_message }}
+        </div>
+    {% endif %}
 
     {% if success_message %}
     <div style="background-color: #d4edda; color: #155724; padding: 20px; border-radius: 8px; text-align: center; margin-bottom: 20px;">
@@ -98,7 +103,7 @@
                 </div>
                 <div class="form-group">
                     <label>Mã số nhân viên (MSNV)</label>
-                    <input type="text" name="msnv" required>
+                    <input type="text" name="msnv" >
                 </div>
             </div>
             <div class="two-cols">
@@ -314,6 +319,36 @@
 
         <button type="submit" class="submit-btn">Gửi thông tin</button>
     </form>
+    {% if data %}
+       <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const formData = {
+                "ho_ten": "{{ data.ho_ten|escapejs|default:'' }}",
+                "msnv": "{{ data.msnv|escapejs|default:'' }}",
+                "sdt": "{{ data.sdt|escapejs|default:'' }}",
+                "ngay_sinh": "{{ data.ngay_sinh|escapejs|default:'' }}",
+                "cccd": "{{ data.cccd|escapejs|default:'' }}",
+                "ngay_cap_cccd": "{{ data.ngay_cap_cccd|escapejs|default:'' }}",
+                "tt_sonha": "{{ data.tt_sonha|escapejs|default:'' }}",
+                "tam_sonha": "{{ data.tam_sonha|escapejs|default:'' }}",
+                "nam_tot_nghiep": "{{ data.nam_tot_nghiep|escapejs|default:'' }}",
+                "ten_truong": "{{ data.ten_truong|escapejs|default:'' }}",
+                "nganh_hoc": "{{ data.nganh_hoc|escapejs|default:'' }}",
+                "nguoi_than": "{{ data.nguoi_than|escapejs|default:'' }}",
+                "moi_quan_he": "{{ data.moi_quan_he|escapejs|default:'' }}",
+                "sdt_nguoi_than": "{{ data.sdt_nguoi_than|escapejs|default:'' }}",
+                "dan_toc": "{{ data.dan_toc|escapejs|default:'' }}",
+                "ton_giao": "{{ data.ton_giao|escapejs|default:'' }}",
+                "noi_cap_cccd": "{{ data.noi_cap_cccd|escapejs|default:'' }}",
+                "trinh_do": "{{ data.trinh_do|escapejs|default:'' }}"
+            };
+            for (const [key, value] of Object.entries(formData)) {
+                const el = document.querySelector(`[name="${key}"]`);
+                if (el && value) el.value = value;
+            }
+        });
+    </script>
+    {% endif %}
     {% endif %}
 </div>
 
